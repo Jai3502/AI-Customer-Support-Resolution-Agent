@@ -1,0 +1,10 @@
+langgraph
+langgraph-checkpoint-sqlite
+langchain
+langchain-core
+langchain-google-genai
+google-genai
+streamlit
+python-dotenv
+pydantic
+aiosqlite

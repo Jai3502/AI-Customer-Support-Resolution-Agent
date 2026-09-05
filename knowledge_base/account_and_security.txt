@@ -1,0 +1,9 @@
+Account & Security Policy
+
+1. Account Security:
+   - Always keep your password confidential and enable Two-Factor Authentication (2FA) in settings.
+   - We will never ask for your account password or OTP via call, SMS, or chat.
+
+2. Suspicious Activity & Fraud:
+   - If you notice unauthorized orders or unexpected password reset emails, report them immediately.
+   - Fraudulent transactions or unauthorized access will be escalated to our Security & Fraud team for account protection.

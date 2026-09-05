@@ -1,0 +1,20 @@
+[
+    {
+        "ticket_id": "TKT-6ED7F86C",
+        "customer_id": "CUST001",
+        "category": "Human Escalation",
+        "description": "Customer requested human verification regarding shipping status for order ORD1001.",
+        "priority": "Medium",
+        "status": "Resolved",
+        "created_at": "2026-08-26T12:33:06.568345"
+    },
+    {
+        "ticket_id": "TKT-9AA1B2C3",
+        "customer_id": "CUST002",
+        "category": "Return & Refund",
+        "description": "Customer requested return authorization for order ORD2002 due to size preference.",
+        "priority": "Low",
+        "status": "In Progress",
+        "created_at": "2026-09-01T10:15:00.000000"
+    }
+]

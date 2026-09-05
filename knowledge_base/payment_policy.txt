@@ -1,0 +1,15 @@
+Payment Policy and Issue Resolution
+
+1. Accepted Payment Methods:
+   - Credit & Debit Cards (Visa, Mastercard, RuPay, Maestro)
+   - UPI Payment (Google Pay, PhonePe, Paytm, BHIM)
+   - Net Banking across 50+ major banks
+   - EMI Options on select credit cards
+   - Cash on Delivery (COD) up to Rs. 10,000
+
+2. Failed Transactions & Double Charges:
+   - If payment is deducted but order fails, amount is auto-refunded by bank within 2-5 business days.
+   - For duplicate payments on the same order, report to support for priority verification and immediate reversal.
+
+3. Invoices & Receipts:
+   - GST invoices can be downloaded directly from the order history page.

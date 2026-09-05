@@ -1,0 +1,13 @@
+Cancellation Policy
+
+1. Pre-Dispatch Cancellation:
+   - Orders can be cancelled instantly before dispatch via the app/website or through our support assistant.
+   - Full 100% refund is initiated automatically upon cancellation.
+
+2. Post-Dispatch Cancellation:
+   - If the item has already been shipped, it cannot be cancelled in-transit.
+   - Customers may refuse delivery at the doorstep or accept and initiate a 30-day return.
+
+3. Automated Cancellation:
+   - Orders may be cancelled by the system due to stock unavailability or address verification issues.
+   - Full refund is processed immediately if pre-paid.

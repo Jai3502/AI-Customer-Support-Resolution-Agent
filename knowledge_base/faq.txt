@@ -1,0 +1,22 @@
+Frequently Asked Questions (FAQ)
+
+Q: How can I track my order?
+A: You can track your order using the tracking ID provided in your order confirmation email or order details page. Enter the tracking ID on our courier partner's portal or ask our agent for real-time status.
+
+Q: How long does shipping take?
+A: Standard shipping takes 3-5 business days. Express shipping takes 1-2 business days. Delivery times may vary for remote or rural locations.
+
+Q: Can I cancel my order?
+A: Yes, orders can be cancelled anytime before they are dispatched. Once shipped, you must initiate a return after delivery.
+
+Q: How can I contact customer support?
+A: Support is available 24/7 via AI Live Chat, email at support@example.com, or toll-free call at 1800-123-4567 (9 AM - 9 PM IST).
+
+Q: What payment methods are accepted?
+A: We accept Credit/Debit Cards (Visa, MasterCard, RuPay, Amex), UPI (Google Pay, PhonePe, Paytm), Net Banking, EMI, and Cash on Delivery (COD) for eligible items.
+
+Q: How do refunds work?
+A: Refunds are processed back to your original payment method within 5-7 business days after the returned product passes quality inspection.
+
+Q: How do I update my shipping address?
+A: You can update your shipping address from your account settings before the order is packed. If already shipped, contact support immediately.

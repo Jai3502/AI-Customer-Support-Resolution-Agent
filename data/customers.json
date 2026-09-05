@@ -1,0 +1,67 @@
+{
+    "CUST001": {
+        "customer_id": "CUST001",
+        "name": "Rahul Sharma",
+        "email": "rahul.sharma@example.com",
+        "phone": "+91-9876543210",
+        "preferred_language": "English",
+        "membership": "VIP Platinum",
+        "city": "Bengaluru",
+        "state": "Karnataka",
+        "pincode": "560001",
+        "total_orders": 5,
+        "notes": "Prefers quick email confirmation and tech accessories."
+    },
+    "CUST002": {
+        "customer_id": "CUST002",
+        "name": "Priya Verma",
+        "email": "priya.verma@example.com",
+        "phone": "+91-9876543211",
+        "preferred_language": "Hindi",
+        "membership": "Gold",
+        "city": "Delhi",
+        "state": "Delhi",
+        "pincode": "110001",
+        "total_orders": 3,
+        "notes": "Prefers communication in Hindi. High focus on prompt delivery."
+    },
+    "CUST003": {
+        "customer_id": "CUST003",
+        "name": "Amit Patel",
+        "email": "amit.patel@example.com",
+        "phone": "+91-9876543212",
+        "preferred_language": "English",
+        "membership": "Standard",
+        "city": "Ahmedabad",
+        "state": "Gujarat",
+        "pincode": "380001",
+        "total_orders": 2,
+        "notes": "Frequently inquires about warranty details."
+    },
+    "CUST004": {
+        "customer_id": "CUST004",
+        "name": "Sneha Iyer",
+        "email": "sneha.iyer@example.com",
+        "phone": "+91-9876543213",
+        "preferred_language": "English",
+        "membership": "VIP Platinum",
+        "city": "Chennai",
+        "state": "Tamil Nadu",
+        "pincode": "600001",
+        "total_orders": 8,
+        "notes": "VIP customer. Expects priority human escalation if issues arise."
+    },
+    "CUST005": {
+        "customer_id": "CUST005",
+        "name": "Vikram Singh",
+        "email": "vikram.singh@example.com",
+        "phone": "+91-9876543214",
+        "preferred_language": "Hindi",
+        "membership": "Standard",
+        "city": "Jaipur",
+        "state": "Rajasthan",
+        "pincode": "302001",
+        "total_orders": 1,
+        "notes": "First-time buyer."
+    }
+}

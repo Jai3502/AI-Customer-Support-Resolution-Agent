@@ -1,0 +1,19 @@
+Shipping and Delivery Policy
+
+1. Delivery Timelines:
+   - Standard Delivery: 3 to 5 business days across major cities.
+   - Express Shipping: 1 to 2 business days (available at checkout for select PIN codes).
+   - Remote Locations: 5 to 7 business days.
+
+2. Shipping Charges:
+   - Orders above Rs. 499 qualify for FREE standard shipping.
+   - Orders below Rs. 499 incur a flat Rs. 50 shipping fee.
+   - Express shipping is charged at Rs. 150 per order.
+
+3. Order Tracking:
+   - Once dispatched, a tracking ID (e.g. TRK10001) and courier link are shared via SMS/Email.
+   - You can inquire about order status anytime by providing your Order ID (e.g. ORD1001).
+
+4. Undelivered / Delayed Packages:
+   - Couriers attempt delivery up to 3 times before returning the parcel to origin.
+   - If delivery is delayed beyond 7 business days, support can file an investigation ticket with the logistics partner.
