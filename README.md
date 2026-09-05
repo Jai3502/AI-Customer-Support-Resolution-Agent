@@ -1,0 +1,342 @@
+#  AI Customer Support & Resolution Agent
+
+An AI-powered customer support assistant built using Python, Streamlit, LangGraph, LangChain, and Google Gemini.
+
+This project simulates an intelligent customer support agent that can understand customer queries, identify intent, search a knowledge base, retrieve customer and order information, maintain conversation memory, generate personalized responses, and escalate critical issues to human support.
+
+##  Features
+
+-  AI-powered customer support chatbot
+-  Short-term conversation memory
+-  Long-term customer memory
+-  Automatic intent classification
+-  Knowledge-base search
+- Customer information lookup
+-  Order information lookup
+-  Payment-related support
+-  Refund and cancellation support
+-  Shipping and delivery support
+-  Warranty and repair support
+-  Human escalation for critical issues
+-  Support ticket creation
+-  Personalized customer responses
+-  Interactive Streamlit UI
+-  SQLite-based persistence
+-  Environment-variable based API configuration
+
+##  How It Works
+
+The application processes every customer query through an AI workflow built with LangGraph.
+
+Customer Query
+      ↓
+Load Customer Memory
+      ↓
+Intent Classification
+      ↓
+Knowledge Base Search
+      ↓
+Customer Lookup
+      ↓
+Order Lookup
+      ↓
+Escalation Check
+      ↓
+Generate AI Response
+      ↓
+Extract New Memory
+      ↓
+Save Memory
+      ↓
+Final Customer Response
+
+##  Tech Stack
+
+| Technology | Purpose |
+|------------|---------|
+| Python | Core development |
+| Streamlit | Web application interface |
+| LangGraph | AI agent workflow |
+| LangChain | LLM integration |
+| Google Gemini | AI response generation |
+| Pydantic | Structured data validation |
+| SQLite | Memory and checkpoint persistence |
+| JSON | Customer, order and ticket data |
+| python-dotenv | Environment variable management |
+
+## 📂 Project Structure
+
+AI-customer-support-agent/
+│
+├── agent/
+│   ├── __init__.py
+│   ├── graph.py
+│   ├── nodes.py
+│   ├── prompts.py
+│   ├── runtime.py
+│   └── state.py
+│
+├── data/
+│   ├── customers.json
+│   ├── orders.json
+│   └── tickets.json
+│
+├── database/
+│   └── .gitkeep
+│
+├── knowledge_base/
+│   ├── account_and_security.txt
+│   ├── cancellation_policy.txt
+│   ├── faq.txt
+│   ├── payment_policy.txt
+│   ├── refund_policy.txt
+│   ├── shipping_policy.txt
+│   └── warranty_and_repairs.txt
+│
+├── memory/
+│   ├── __init__.py
+│   ├── manager.py
+│   └── runtime.py
+│
+├── tools/
+│   ├── __init__.py
+│   ├── customer_lookup.py
+│   ├── escalation.py
+│   ├── knowledge_search.py
+│   ├── order_lookup.py
+│   └── ticket.py
+│
+├── app.py
+├── requirements.txt
+├── .gitignore
+└── README.md
+
+##  Installation
+
+### 1. Clone the Repository
+
+git clone https://github.com/Jai3502/AI-customer-support-agent.git
+
+cd AI-customer-support-agent
+
+### 2. Create Virtual Environment
+
+Windows:
+
+python -m venv venv
+
+Activate:
+
+venv\Scripts\activate
+
+macOS / Linux:
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+### 3. Install Dependencies
+
+pip install -r requirements.txt
+
+##  API Configuration
+
+This project uses Google Gemini for AI-powered responses.
+
+Create a `.env` file in the project root:
+
+GOOGLE_API_KEY=your_google_gemini_api_key
+GEMINI_MODEL=gemini-3.5-flash-lite
+
+Replace `your_google_gemini_api_key` with your actual Gemini API key.
+
+ Never upload your `.env` file to GitHub.
+
+##  Run the Application
+
+Start the Streamlit application:
+
+streamlit run app.py
+
+Then open the URL shown in the terminal.
+
+Usually:
+
+http://localhost:8501
+
+##  Example Customer Queries
+
+Where is my order ORD1001?
+
+I want to cancel my order.
+
+I was charged twice for the same order.
+
+What is your refund policy?
+
+My product arrived damaged. What should I do?
+
+How long does shipping take?
+
+I want to know about the warranty.
+
+##  Intent Classification
+
+The AI agent classifies customer queries into different categories.
+
+Supported intents:
+
+- FAQ
+- ORDER
+- PAYMENT
+- REFUND
+- CANCELLATION
+- COMPLAINT
+- OTHER
+
+The system also uses a confidence score to determine whether a conversation should be escalated.
+
+##  Knowledge Base
+
+The project contains a local knowledge base with information related to:
+
+- Account & Security
+- Cancellation Policy
+- Frequently Asked Questions
+- Payment Policy
+- Refund Policy
+- Shipping Policy
+- Warranty & Repairs
+
+The AI agent searches the relevant knowledge before generating its response.
+
+This helps the chatbot provide responses based on the application's available support information.
+
+##  Memory System
+
+The application uses two types of memory.
+
+### Short-Term Memory
+
+Short-term memory maintains the current conversation context.
+
+This allows the chatbot to understand follow-up questions within the same conversation.
+
+### Long-Term Memory
+
+Long-term memory stores useful customer information that can be reused in future interactions.
+
+This helps the agent provide more personalized customer support.
+
+##  Human Escalation
+
+Some customer issues should not be handled entirely by an AI system.
+
+The agent can identify high-risk or sensitive situations and escalate them to human support.
+
+Examples include:
+
+- Fraud or scam reports
+- Duplicate payments
+- Serious complaints
+- Legal threats
+- Threat-related messages
+- Low-confidence AI classifications
+
+When escalation is required, the system can create a support ticket for human follow-up.
+
+##  Customer Lookup
+
+The application contains sample customer data in:
+
+data/customers.json
+
+The agent can use customer information to personalize responses.
+
+##  Order Lookup
+
+Order information is stored in:
+
+data/orders.json
+
+The agent can retrieve order-related information and answer customer questions about orders.
+
+##  Ticket System
+
+Support ticket information is maintained using:
+
+data/tickets.json
+
+The system can use tickets when an issue requires human support.
+
+##  Security
+
+The following files and folders should not be uploaded to GitHub:
+
+.env
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.db
+*.sqlite
+*.sqlite3
+.streamlit/secrets.toml
+
+Make sure these are included in `.gitignore`.
+
+##  Project Limitations
+
+This is a portfolio / learning project and uses local JSON data and SQLite persistence.
+
+It is not connected to a real production CRM, payment gateway, or order management system.
+
+For production deployment, additional security, authentication, monitoring, database infrastructure, and API integrations would be required.
+
+##  Future Improvements
+
+-  User authentication
+-  Admin dashboard
+-  Customer support analytics
+-  PostgreSQL database
+-  Vector database / semantic search
+-  Email integration
+-  WhatsApp integration
+-  Multi-language support
+-  Cloud deployment
+-  Automated testing
+-  Performance monitoring
+-  Role-based access control
+-  Advanced AI agent tools
+
+##  Learning Outcomes
+
+Through this project, the following concepts are demonstrated:
+
+- Generative AI
+- LLM integration
+- LangChain
+- LangGraph
+- Agentic AI workflows
+- Prompt engineering
+- Retrieval-based question answering
+- Short-term memory
+- Long-term memory
+- Intent classification
+- Structured outputs
+- Customer support automation
+- Human-in-the-loop escalation
+- Streamlit application development
+- SQLite persistence
+- Python project architecture
+GitHub:
+https://github.com/Jai3502
+
+Project Repository:
+https://github.com/Jai3502/AI-customer-support-agent
+
+## ⭐ Support
+
+If you find this project useful, consider giving the repository a ⭐ star.
+
+Thanks for checking out the project! 
