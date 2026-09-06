@@ -1,3 +1,4 @@
+ HEAD
 #  AI Customer Support & Resolution Agent
 
 An AI-powered customer support assistant built using Python, Streamlit, LangGraph, LangChain, and Google Gemini.
@@ -340,3 +341,154 @@ https://github.com/Jai3502/AI-customer-support-agent
 If you find this project useful, consider giving the repository a ⭐ star.
 
 Thanks for checking out the project! 
+=======
+# 🎧 AI Customer Support & Resolution Agent
+
+An intelligent, autonomous customer support agent built with **LangGraph**, **Gemini**, **Streamlit**, and **SQLite Dual-Layer Memory**. The system features **Performance APM Monitoring**, **Granular Role-Based Access Control (RBAC)**, **Advanced AI Agent Tools**, an **Admin Operations Desk**, **Customer Support Analytics**, intent classification, knowledge retrieval, order tracking, and automated human escalation.
+
+---
+
+## 🌟 Key Features
+
+- 📈 **Performance Monitoring & APM Telemetry**:
+  - Step-by-step latency profiling across all LangGraph nodes (`classify_intent`, `retrieve_knowledge`, `lookup_order`, `generate_response`).
+  - Real-time P95 latency, average execution time, and token consumption tracking (prompt + completion tokens).
+  - Persistent execution trace logs and interactive APM telemetry dashboard.
+- 🔑 **Granular Role-Based Access Control (RBAC)**:
+  - Permission-enforced role matrix across **Super Admin**, **Support Agent**, **Compliance Auditor**, and **Customer**.
+  - Action-level permissions (`delete_tickets`, `manage_roles`, `edit_customers`, `view_analytics`, `view_performance`).
+  - User Role Manager in Admin Desk for dynamic role reassignment.
+- 🤖 **Advanced AI Agent Tools**:
+  - **Pro-Rated Refund & Fee Calculator**: Financial engine calculating 30-day return window eligibility, restocking fees (10%), tax adjustments, and generating instant store credit vouchers (`REFUND-XXXXXXXX`).
+  - **Live Policy & Rule Search**: Dynamic policy lookup for shipping SLAs, price match rules, and brand warranty clauses.
+  - **Hardware & Software Diagnostic Assistant**: Targeted troubleshooting for electronics, laptops, audio, and warranty claim eligibility.
+- 🔐 **User Authentication & Session Security**:
+  - Salted `SHA-256` password hashing, registration, and quick-select demo role authorization.
+- 👨💼 **Admin Operations Dashboard**:
+  - **Ticket Operations Desk**: Filter tickets by status & priority, assign agents, update resolution notes, and delete tickets.
+  - **Customer Directory & Profile Manager**: View profiles, order history, long-term memory logs, update admin notes, and upgrade membership tiers.
+  - **Order Oversight**: Track system orders and update fulfillment status (`Processing`, `Shipped`, `Delivered`, `Cancelled`).
+- 📊 **Customer Support Analytics**:
+  - Operational KPIs, resolution rates, ticket category distributions, customer tier breakdowns, order fulfillment status, and one-click CSV/JSON export.
+
+---
+
+## 🏗️ Architecture & Agent Execution Flow
+
+```mermaid
+flowchart TD
+    START([User Message]) --> auth_check{🔐 Auth & RBAC Guard}
+    auth_check -->|Customer Role| chat_view[🎧 AI Support Chat]
+    auth_check -->|Admin / Agent / Auditor| nav_switch{🧭 Select Module}
+    
+    nav_switch --> chat_view
+    nav_switch --> admin_view[👨💼 Admin Dashboard & RBAC]
+    nav_switch --> analytics_view[📊 Support Analytics & APM]
+
+    chat_view --> load_memory[🧠 Load Long-Term Memory]
+    load_memory --> classify_intent[🎯 Classify Intent]
+    classify_intent --> retrieve_knowledge[📚 Knowledge & Live Policy Search]
+    retrieve_knowledge --> lookup_customer[👤 Lookup Customer Profile]
+    lookup_customer --> lookup_order[📦 Order Lookup & Refund Calculator]
+    lookup_order --> check_escalation[🚨 Check Escalation Need]
+    check_escalation --> generate_response[💬 Generate AI Response]
+    generate_response --> extract_memory[🔍 Extract New Memory]
+    extract_memory --> save_memory[💾 Save Memory & APM Trace Log]
+    save_memory --> END([Response to User])
+```
+
+---
+
+## 📁 Project Structure
+
+```text
+ai-customer-support-agent/
+├── agent/
+│   ├── graph.py            # LangGraph state graph definition & edges
+│   ├── nodes.py            # APM-profiled node logic (Intent, Memory, Knowledge, Escalation, Response)
+│   ├── prompts.py          # System prompts for intent classification & memory extraction
+│   ├── runtime.py          # Graph compilation with checkpointer & store
+│   └── state.py            # TypedDict AgentState with APM latency & tool fields
+├── views/
+│   ├── admin_view.py       # Admin Operations Desk & RBAC Manager
+│   ├── analytics_view.py   # Support Analytics & APM Telemetry Dashboard
+│   ├── auth_view.py        # RBAC Login view & Quick Role Selectors
+│   └── chat_view.py        # Support Chat Agent view
+├── data/                   # JSON data persistence (users, customers, orders, tickets, APM logs)
+├── database/               # SQLite database files (checkpoints & long-term memory)
+├── knowledge_base/         # Support articles & documentation
+├── memory/
+│   ├── manager.py          # MemoryManager interface for cross-session store
+│   └── runtime.py          # Persistence initialization (SqliteSaver & SqliteStore)
+├── tools/
+│   ├── advanced_tools.py   # Refund calculator, policy search, & diagnostic assistant
+│   ├── analytics.py        # KPI & chart data calculation engine
+│   ├── customer_lookup.py  # Customer profile & notes query tools
+│   ├── escalation.py       # Escalation decision tools
+│   ├── knowledge_search.py # Knowledge base retrieval tools
+│   ├── order_lookup.py     # Order tracking & status update tools
+│   ├── performance.py      # APM telemetry performance monitoring tool
+│   └── ticket.py           # Support ticket CRUD management tools
+├── .env                    # Environment configuration (API keys)
+├── app.py                  # Streamlit web application frontend & router
+├── auth.py                 # RBAC matrix, authentication, & password security
+└── requirements.txt        # Python package dependencies
+```
+
+---
+
+## 🚀 Quick Start & Installation
+
+### Prerequisites
+
+- Python 3.10 or higher
+- Google Gemini API Key ([Get an API key](https://aistudio.google.com/))
+
+### 1. Clone & Set Up Workspace
+
+```bash
+git clone https://github.com/Jai3502/ai-customer-support-agent.git
+cd ai-customer-support-agent
+```
+
+### 2. Create Virtual Environment & Install Dependencies
+
+```bash
+python -m venv venv
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+pip install -r requirements.txt
+```
+
+### 3. Configure Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+GEMINI_API_KEY=your_google_gemini_api_key_here
+```
+
+### 4. Run the Streamlit Application
+
+```bash
+streamlit run app.py
+```
+
+Open your browser at `http://localhost:8501`.
+
+### 🔑 Default RBAC Login Credentials
+
+- **Super Admin**: Username `admin` | Password `admin123`
+- **Support Agent**: Username `agent1` | Password `agent123`
+- **Compliance Auditor**: Username `auditor1` | Password `auditor123`
+- **Customer Account**: Username `rahul` | Password `customer123`
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+ 9c88888 (Upgrade AI customer support agent)

@@ -12,7 +12,11 @@ class AgentState(TypedDict, total=False):
     knowledge_context: str
     customer_data: Dict[str, Any]
     order_data: Dict[str, Any]
+    advanced_tool_data: Dict[str, Any]
     ticket_data: Dict[str, Any]
     requires_human: bool
     response: str
     agent_steps: List[str]
+    node_latencies: Dict[str, float]
+    prompt_tokens: int
+    completion_tokens: int

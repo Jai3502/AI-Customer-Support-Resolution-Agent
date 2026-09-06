@@ -4,17 +4,70 @@ import streamlit as st
 from memory.runtime import Persistence
 from memory.manager import MemoryManager
 from agent.runtime import create_agent
-from tools.customer_lookup import list_all_customers, get_customer
+from auth import (
+    has_permission,
+    PERM_CHAT_SUPPORT,
+    PERM_VIEW_ADMIN_DESK,
+    PERM_VIEW_ANALYTICS,
+    PERM_VIEW_PERFORMANCE,
+)
+from views.auth_view import render_auth_view
+from views.chat_view import render_chat_view
+from views.admin_view import render_admin_dashboard
+from views.analytics_view import render_analytics_dashboard
 
+# ---------------------------------------------------------------------------
+# Page Configuration & Modern Design System
+# ---------------------------------------------------------------------------
 st.set_page_config(
-    page_title="AI Customer Support Agent",
+    page_title="AI Customer Support Portal",
     page_icon="🎧",
     layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+st.markdown(
+    """
+    <style>
+    .stApp {
+        background-color: #0e1117;
+    }
+    
+    [data-testid="stMetricValue"] {
+        font-size: 1.8rem !important;
+        font-weight: 700 !important;
+        color: #f8fafc !important;
+    }
+    
+    .stButton>button {
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        transition: all 0.2s ease-in-out !important;
+    }
+    .stButton>button:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+    }
+    
+    .role-badge {
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: white;
+    }
+    .role-admin { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+    .role-agent { background: linear-gradient(135deg, #2563eb, #0284c7); }
+    .role-auditor { background: linear-gradient(135deg, #d97706, #b45309); }
+    .role-customer { background: linear-gradient(135deg, #059669, #10b981); }
+    </style>
+    """,
+    unsafe_allow_html=True,
 )
 
 
 # ---------------------------------------------------------------------------
-# One-time persistence + compiled graph, cached across reruns
+# Global Graph & Persistence Initialization
 # ---------------------------------------------------------------------------
 @st.cache_resource
 def get_persistence():
@@ -29,8 +82,17 @@ graph = create_agent(
 memory_mgr = MemoryManager(persistence.store)
 
 # ---------------------------------------------------------------------------
-# Session state initialization
+# Session State Initialization
 # ---------------------------------------------------------------------------
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if "user" not in st.session_state:
+    st.session_state.user = None
+
+if "role" not in st.session_state:
+    st.session_state.role = None
+
 if "thread_id" not in st.session_state:
     st.session_state.thread_id = str(uuid.uuid4())
 
@@ -40,138 +102,87 @@ if "messages" not in st.session_state:
 if "customer_id" not in st.session_state:
     st.session_state.customer_id = "CUST001"
 
+if "active_view" not in st.session_state:
+    st.session_state.active_view = "🎧 AI Support Chat"
+
 # ---------------------------------------------------------------------------
-# Sidebar: Customer Selector & Context Explorer
+# Authentication Routing Guard
 # ---------------------------------------------------------------------------
+if not st.session_state.authenticated:
+    render_auth_view()
+    st.stop()
+
+# ---------------------------------------------------------------------------
+# Sidebar User Profile & Navigation Controls
+# ---------------------------------------------------------------------------
+user = st.session_state.user or {}
+user_role = st.session_state.get("role", "customer").lower()
+
+role_badge_class = f"role-{user_role}"
+role_label = user_role.capitalize()
+if user_role == "admin":
+    role_label = "👨💼 Super Admin"
+elif user_role == "agent":
+    role_label = "🎧 Support Agent"
+elif user_role == "auditor":
+    role_label = "📊 Auditor"
+else:
+    role_label = "👤 Customer"
+
 with st.sidebar:
-    st.header("👤 Customer Profile")
+    st.markdown(f"### 👋 {user.get('name', 'User')} <span class='role-badge {role_badge_class}'>{role_label}</span>", unsafe_allow_html=True)
+    st.caption(f"📧 `{user.get('email', '')}`")
 
-    all_customers = list_all_customers()
-    options = {
-        f"{c.get('name', cid)} ({cid})": cid for cid, c in all_customers.items()
-    }
-    options["Custom Customer ID"] = "CUSTOM"
+    st.divider()
 
-    default_index = 0
-    option_keys = list(options.keys())
-    for idx, key in enumerate(option_keys):
-        if options[key] == st.session_state.customer_id:
-            default_index = idx
+    st.markdown("### 🧭 Portal Navigation")
 
-    selected_option = st.selectbox(
-        "Select Active Customer",
-        options=option_keys,
-        index=default_index,
+    # Generate available views according to RBAC permissions
+    views = []
+    if has_permission(user_role, PERM_CHAT_SUPPORT):
+        views.append("🎧 AI Support Chat")
+
+    if has_permission(user_role, PERM_VIEW_ADMIN_DESK):
+        views.append("👨💼 Admin Dashboard")
+
+    if has_permission(user_role, PERM_VIEW_ANALYTICS) or has_permission(user_role, PERM_VIEW_PERFORMANCE):
+        views.append("📊 Support & APM Analytics")
+
+    if not views:
+        views = ["🎧 AI Support Chat"]
+
+    if st.session_state.active_view not in views:
+        st.session_state.active_view = views[0]
+
+    selected_view = st.radio(
+        "Select Module",
+        options=views,
+        index=views.index(st.session_state.active_view),
+        key="nav_radio",
     )
 
-    if options[selected_option] == "CUSTOM":
-        st.session_state.customer_id = st.text_input(
-            "Enter Custom Customer ID",
-            value=st.session_state.customer_id,
-        )
-    else:
-        st.session_state.customer_id = options[selected_option]
-
-    # Show active customer details card
-    active_customer = get_customer(st.session_state.customer_id)
-    if isinstance(active_customer, dict) and "name" in active_customer:
-        st.subheader(f"✨ {active_customer.get('name')}")
-        col1, col2 = st.columns(2)
-        with col1:
-            st.markdown(f"**Tier:** `{active_customer.get('membership')}`")
-            st.markdown(f"**Language:** `{active_customer.get('preferred_language')}`")
-        with col2:
-            st.markdown(f"**Orders:** `{active_customer.get('total_orders')}`")
-            st.markdown(f"**City:** `{active_customer.get('city')}`")
-
-        if active_customer.get("notes"):
-            st.caption(f"ℹ️ {active_customer.get('notes')}")
-    else:
-        st.info(f"Customer ID: `{st.session_state.customer_id}`")
+    st.session_state.active_view = selected_view
 
     st.divider()
-    st.header("🧠 Long-Term Memory")
 
-    stored_memories = memory_mgr.get_all_user_memories(st.session_state.customer_id)
-    if stored_memories:
-        for m in stored_memories:
-            st.markdown(f"• {m}")
-    else:
-        st.caption("No long-term memories saved yet.")
-
-    st.divider()
-    st.caption(f"Session Thread ID: `{st.session_state.thread_id[:8]}...`")
-
-    if st.button("🆕 New Conversation", use_container_width=True):
-        st.session_state.thread_id = str(uuid.uuid4())
+    if st.button("🚪 Sign Out", use_container_width=True):
+        st.session_state.authenticated = False
+        st.session_state.user = None
+        st.session_state.role = None
         st.session_state.messages = []
         st.rerun()
 
 # ---------------------------------------------------------------------------
-# Main Chat Area
+# View Rendering Switcher
 # ---------------------------------------------------------------------------
-st.title("🎧 AI Customer Support & Resolution Agent")
-st.caption("Powered by LangGraph, Gemini 3.5, Structured Data & Short/Long-Term Memory")
+if st.session_state.active_view == "🎧 AI Support Chat":
+    render_chat_view(graph, memory_mgr)
 
-# Render existing chat history
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+elif st.session_state.active_view == "👨💼 Admin Dashboard" and has_permission(user_role, PERM_VIEW_ADMIN_DESK):
+    render_admin_dashboard(memory_mgr)
 
-# Chat Input
-user_input = st.chat_input("How can I help you today?")
+elif st.session_state.active_view == "📊 Support & APM Analytics" and (has_permission(user_role, PERM_VIEW_ANALYTICS) or has_permission(user_role, PERM_VIEW_PERFORMANCE)):
+    render_analytics_dashboard()
 
-if user_input:
-    st.session_state.messages.append({"role": "user", "content": user_input})
-
-    with st.chat_message("user"):
-        st.markdown(user_input)
-
-    with st.chat_message("assistant"):
-        with st.status("Processing request...", expanded=False) as status:
-            try:
-                config = {
-                    "configurable": {
-                        "thread_id": st.session_state.thread_id,
-                    }
-                }
-
-                result = graph.invoke(
-                    {
-                        "user_id": st.session_state.customer_id,
-                        "user_message": user_input,
-                    },
-                    config=config,
-                )
-
-                response = result.get(
-                    "response", "I was unable to generate a response."
-                )
-
-                steps = result.get("agent_steps", [])
-                status.update(
-                    label=f"✅ Completed ({len(steps)} steps)",
-                    state="complete",
-                )
-
-                st.markdown(response)
-
-                # Append assistant response to session state
-                st.session_state.messages.append(
-                    {"role": "assistant", "content": response}
-                )
-
-                if result.get("requires_human"):
-                    ticket = result.get("ticket_data", {})
-                    if ticket:
-                        st.info(
-                            f"🎫 **Escalated to Support**: Ticket `{ticket.get('ticket_id', 'N/A')}` "
-                            f"created with `{ticket.get('priority', 'Medium')}` priority."
-                        )
-
-            except Exception as e:
-                status.update(label="❌ Agent Error", state="error")
-                st.error(str(e))
-
-        # Force UI refresh to update memory viewer sidebar if memory was saved
-        st.rerun()
+else:
+    render_chat_view(graph, memory_mgr)

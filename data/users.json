@@ -1,0 +1,56 @@
+{
+    "admin": {
+        "username": "admin",
+        "password_hash": "17d9b8091f4335a6384f2e9d3c5cc77aad5a33986d5520f6b2626f5da42b4c47",
+        "role": "admin",
+        "name": "System Administrator",
+        "email": "admin@supportagent.com",
+        "customer_id": null,
+        "created_at": "2026-09-06T18:10:24.803265"
+    },
+    "rahul": {
+        "username": "rahul",
+        "password_hash": "84891a56dbc55eb7fcec99946230fea62142c0f10cb61fe562427b1bc5918c0e",
+        "role": "customer",
+        "name": "Rahul Sharma",
+        "email": "rahul.sharma@example.com",
+        "customer_id": "CUST001",
+        "created_at": "2026-09-06T18:10:24.803295"
+    },
+    "priya": {
+        "username": "priya",
+        "password_hash": "84891a56dbc55eb7fcec99946230fea62142c0f10cb61fe562427b1bc5918c0e",
+        "role": "customer",
+        "name": "Priya Verma",
+        "email": "priya.verma@example.com",
+        "customer_id": "CUST002",
+        "created_at": "2026-09-06T18:10:24.803297"
+    },
+    "amit": {
+        "username": "amit",
+        "password_hash": "84891a56dbc55eb7fcec99946230fea62142c0f10cb61fe562427b1bc5918c0e",
+        "role": "customer",
+        "name": "Amit Patel",
+        "email": "amit.patel@example.com",
+        "customer_id": "CUST003",
+        "created_at": "2026-09-06T18:10:24.803299"
+    },
+    "sneha": {
+        "username": "sneha",
+        "password_hash": "84891a56dbc55eb7fcec99946230fea62142c0f10cb61fe562427b1bc5918c0e",
+        "role": "customer",
+        "name": "Sneha Iyer",
+        "email": "sneha.iyer@example.com",
+        "customer_id": "CUST004",
+        "created_at": "2026-09-06T18:10:24.803301"
+    },
+    "vikram": {
+        "username": "vikram",
+        "password_hash": "84891a56dbc55eb7fcec99946230fea62142c0f10cb61fe562427b1bc5918c0e",
+        "role": "customer",
+        "name": "Vikram Singh",
+        "email": "vikram.singh@example.com",
+        "customer_id": "CUST005",
+        "created_at": "2026-09-06T18:10:24.803302"
+    }
+}

@@ -1,0 +1,71 @@
+[
+    {
+        "trace_id": "TRC-1001",
+        "timestamp": "2026-09-06T10:15:20.123456",
+        "thread_id": "demo-thread-1",
+        "user_id": "CUST001",
+        "intent": "Order Inquiry",
+        "total_latency_ms": 1245.5,
+        "node_latencies": {
+            "load_memory": 45.2,
+            "classify_intent": 210.4,
+            "retrieve_knowledge": 120.1,
+            "lookup_customer": 65.0,
+            "lookup_order": 78.3,
+            "check_escalation": 30.2,
+            "generate_response": 580.3,
+            "extract_memory": 85.0,
+            "save_memory": 31.0
+        },
+        "prompt_tokens": 450,
+        "completion_tokens": 120,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1002",
+        "timestamp": "2026-09-06T11:20:10.654321",
+        "thread_id": "demo-thread-2",
+        "user_id": "CUST002",
+        "intent": "Return & Refund",
+        "total_latency_ms": 1580.2,
+        "node_latencies": {
+            "load_memory": 40.0,
+            "classify_intent": 235.0,
+            "retrieve_knowledge": 150.0,
+            "lookup_customer": 70.0,
+            "lookup_order": 95.0,
+            "check_escalation": 45.0,
+            "generate_response": 780.2,
+            "extract_memory": 115.0,
+            "save_memory": 50.0
+        },
+        "prompt_tokens": 620,
+        "completion_tokens": 210,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1003",
+        "timestamp": "2026-09-06T12:05:45.987654",
+        "thread_id": "demo-thread-3",
+        "user_id": "CUST004",
+        "intent": "Human Escalation",
+        "total_latency_ms": 1820.0,
+        "node_latencies": {
+            "load_memory": 55.0,
+            "classify_intent": 240.0,
+            "retrieve_knowledge": 180.0,
+            "lookup_customer": 85.0,
+            "lookup_order": 110.0,
+            "check_escalation": 60.0,
+            "generate_response": 890.0,
+            "extract_memory": 140.0,
+            "save_memory": 60.0
+        },
+        "prompt_tokens": 780,
+        "completion_tokens": 260,
+        "status": "success",
+        "error": null
+    }
+]
