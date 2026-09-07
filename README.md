@@ -350,6 +350,16 @@ An intelligent, autonomous customer support agent built with **LangGraph**, **Ge
 
 ## 🌟 Key Features
 
+- 🐘 **PostgreSQL Relational Storage Engine**:
+  - Relational database schema for `users`, `customers`, `orders`, `tickets`, `performance_logs`, `knowledge_vectors`, and `long_term_memories`.
+  - Automatic migration, DDL initialization, and initial JSON dataset auto-seeding routines.
+  - Dual-engine fallback architecture: automatically defaults to SQLite & JSON files if PostgreSQL is unconfigured or offline.
+- 🎯 **Vector Database & Cosine Semantic Search**:
+  - `pgvector` extension integration for high-dimensional vector embeddings (`vector(768)`).
+  - Document chunking engine and vector embedding indexer for support articles in `knowledge_base/*.txt`.
+  - Upgraded knowledge search (`search_knowledge_base`) using cosine-similarity semantic vector matching with score weighting.
+  - Vector-based semantic memory retrieval (`search_memory_vectors`) for long-term customer context.
+  - Interactive **Vector Semantic Search Playground** in the Admin Operations Desk.
 - 📈 **Performance Monitoring & APM Telemetry**:
   - Step-by-step latency profiling across all LangGraph nodes (`classify_intent`, `retrieve_knowledge`, `lookup_order`, `generate_response`).
   - Real-time P95 latency, average execution time, and token consumption tracking (prompt + completion tokens).
@@ -368,8 +378,9 @@ An intelligent, autonomous customer support agent built with **LangGraph**, **Ge
   - **Ticket Operations Desk**: Filter tickets by status & priority, assign agents, update resolution notes, and delete tickets.
   - **Customer Directory & Profile Manager**: View profiles, order history, long-term memory logs, update admin notes, and upgrade membership tiers.
   - **Order Oversight**: Track system orders and update fulfillment status (`Processing`, `Shipped`, `Delivered`, `Cancelled`).
+  - **PostgreSQL & Vector DB Control Panel**: Inspect connection status, trigger table migrations, index document vectors, and query semantic vector embeddings.
 - 📊 **Customer Support Analytics**:
-  - Operational KPIs, resolution rates, ticket category distributions, customer tier breakdowns, order fulfillment status, and one-click CSV/JSON export.
+  - Operational KPIs, resolution rates, ticket category distributions, customer tier breakdowns, order fulfillment status, database telemetry, and one-click CSV/JSON export.
 
 ---
 

@@ -27,14 +27,18 @@ from tools.order_lookup import (
     update_order_status,
 )
 from memory.manager import MemoryManager
+from database.pg_client import check_connection_status, is_postgres_available
+from database.schema import init_db_and_seed, get_table_counts
+from database.vector_db import reindex_knowledge_base, search_knowledge_vectors
 
 
 def render_admin_dashboard(memory_mgr: MemoryManager):
+
     """Render 👨💼 Customer Support Admin Operations Desk with RBAC protection."""
     user_role = st.session_state.get("role", "customer")
 
     st.title("👨💼 Customer Support Operations & RBAC Control Desk")
-    st.caption("Manage support tickets, customer profiles, long-term memories, order fulfillment, and user role access.")
+    st.caption("Manage support tickets, customer profiles, long-term memories, order fulfillment, user role access, and PostgreSQL/Vector DB infrastructure.")
 
     # --- Top KPI Summary Cards ---
     tickets = get_all_tickets()
@@ -59,6 +63,7 @@ def render_admin_dashboard(memory_mgr: MemoryManager):
         "🎫 Ticket Operations Desk",
         "👥 Customer Profiles & Memory",
         "📦 Order Oversight & Fulfillment",
+        "🐘 PostgreSQL & 🎯 Vector DB",
     ]
 
     if has_permission(user_role, PERM_MANAGE_ROLES):
@@ -350,10 +355,85 @@ def render_admin_dashboard(memory_mgr: MemoryManager):
                         st.rerun()
 
     # ---------------------------------------------------------------------------
-    # Tab 4: User Role Access Control (Admin Restricted)
+    # Tab 4: PostgreSQL & Vector DB Management
+    # ---------------------------------------------------------------------------
+    with admin_tabs[3]:
+        st.subheader("🐘 PostgreSQL Database & 🎯 Vector DB Management")
+        st.caption("Inspect PostgreSQL connection status, table records, trigger data migration, and re-index vector embeddings.")
+
+        conn_info = check_connection_status()
+
+        pg_col1, pg_col2 = st.columns([1, 1])
+
+        with pg_col1:
+            st.markdown("### 🔌 Database Connection Status")
+            if conn_info["available"]:
+                st.success(f"✅ **PostgreSQL Active** (`{conn_info['connection_url']}`)")
+            else:
+                st.warning(f"⚠️ **SQLite / JSON Fallback Active**\n\n*Connection URL:* `{conn_info['connection_url']}`\n\n*To enable PostgreSQL, set `POSTGRES_URL` in your `.env` file.*")
+
+            st.divider()
+
+            st.markdown("### 🛠️ Database Actions & Seeding")
+            if st.button("🔄 Trigger PostgreSQL Table Migration & JSON Seed", use_container_width=True):
+                with st.spinner("Initializing tables and seeding JSON data into PostgreSQL..."):
+                    res = init_db_and_seed()
+                    if res.get("status") == "success":
+                        st.success(f"Successfully seeded PostgreSQL! Summary: `{res.get('seeded')}`")
+                    elif res.get("status") == "skipped":
+                        st.info(f"Skipped PostgreSQL seeding: {res.get('reason')}")
+                    else:
+                        st.error(f"PostgreSQL migration error: {res.get('error')}")
+
+            if st.button("🎯 Re-Index Knowledge Base Vectors", use_container_width=True):
+                with st.spinner("Generating document chunk vector embeddings..."):
+                    res = reindex_knowledge_base()
+                    if res.get("status") == "success":
+                        st.success(f"Successfully indexed {res.get('total_chunks_indexed')} chunks across {res.get('postgres_vectors_synced')} PostgreSQL vector rows!")
+                    else:
+                        st.error(f"Vector indexing result: {res}")
+
+        with pg_col2:
+            st.markdown("### 📊 PostgreSQL Table Record Counts")
+            counts = get_table_counts()
+            if counts:
+                for tbl, cnt in counts.items():
+                    st.markdown(f"- **`{tbl}`**: `{cnt}` records")
+            else:
+                st.info("No PostgreSQL table statistics available (Fallback mode active).")
+
+        st.divider()
+
+        st.markdown("### 🔍 Vector Semantic Search Playground")
+        st.caption("Interactively test cosine-similarity semantic vector retrieval across knowledge base documents.")
+
+        v_col1, v_col2 = st.columns([3, 1])
+        with v_col1:
+            v_query = st.text_input(
+                "Search Query",
+                value="What happens if my package arrives damaged or defective?",
+                placeholder="Type any natural language customer support question...",
+                key="v_query_input"
+            )
+        with v_col2:
+            v_top_k = st.slider("Top K Results", min_value=1, max_value=5, value=3, key="v_top_k_slider")
+
+        if st.button("🚀 Search Vector Database", use_container_width=True):
+            with st.spinner("Computing query vector embedding and searching vector store..."):
+                v_results = search_knowledge_vectors(v_query, top_k=v_top_k)
+                if not v_results:
+                    st.warning("No relevant vector matches found. Try clicking 'Re-Index Knowledge Base Vectors' above.")
+                else:
+                    for i, r in enumerate(v_results, 1):
+                        score_pct = int(r.get("similarity_score", 0) * 100)
+                        st.markdown(f"#### Match #{i}: Document `{r.get('filename')}` (Similarity: **{score_pct}%**) - Engine: `{r.get('source')}`")
+                        st.info(r.get("content"))
+
+    # ---------------------------------------------------------------------------
+    # Tab 5: User Role Access Control (Admin Restricted)
     # ---------------------------------------------------------------------------
     if has_permission(user_role, PERM_MANAGE_ROLES):
-        with admin_tabs[3]:
+        with admin_tabs[4]:
             st.subheader("🔑 Role-Based Access Control (RBAC) Management")
             st.caption("Assign user roles across System Admin, Support Agent, Auditor, and Customer profiles.")
 
@@ -382,3 +462,4 @@ def render_admin_dashboard(memory_mgr: MemoryManager):
                         update_user_role(uname, selected_role)
                         st.success(f"Role for '{uname}' updated to {selected_role.upper()}!")
                         st.rerun()
+

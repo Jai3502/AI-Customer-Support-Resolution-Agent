@@ -130,7 +130,32 @@ def log_trace(
         logs = logs[-200:]
 
     PERFORMANCE_FILE.write_text(json.dumps(logs, indent=4), encoding="utf-8")
+
+    # Sync to PostgreSQL if available
+    from database.pg_client import is_postgres_available, get_db_session
+    from database.schema import PerformanceLogModel
+
+    if is_postgres_available():
+        session = get_db_session()
+        if session:
+            try:
+                session.add(PerformanceLogModel(
+                    thread_id=thread_id or "default",
+                    customer_id=user_id,
+                    intent=intent,
+                    total_latency_ms=total_latency_ms,
+                    node_latencies_json=json.dumps(node_latencies),
+                    tokens_used_json=json.dumps({"prompt": prompt_tokens, "completion": completion_tokens}),
+                    created_at=trace_entry["timestamp"]
+                ))
+                session.commit()
+            except Exception:
+                session.rollback()
+            finally:
+                session.close()
+
     return trace_entry
+
 
 
 def get_performance_summary() -> dict:

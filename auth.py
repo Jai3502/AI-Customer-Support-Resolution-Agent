@@ -2,6 +2,8 @@ import json
 import hashlib
 from pathlib import Path
 from datetime import datetime
+from database.pg_client import is_postgres_available, get_db_session
+from database.schema import UserModel, CustomerModel
 
 USERS_FILE = Path("data/users.json")
 CUSTOMERS_FILE = Path("data/customers.json")
@@ -140,6 +142,29 @@ def seed_default_users_if_needed():
 
 
 def load_users() -> dict:
+    if is_postgres_available():
+        session = get_db_session()
+        if session:
+            try:
+                db_users = session.query(UserModel).all()
+                if db_users:
+                    users = {}
+                    for u in db_users:
+                        users[u.username.lower()] = {
+                            "username": u.username,
+                            "password_hash": u.password_hash,
+                            "role": u.role,
+                            "name": u.name,
+                            "email": u.email,
+                            "customer_id": u.customer_id,
+                            "created_at": u.created_at
+                        }
+                    return users
+            except Exception:
+                pass
+            finally:
+                session.close()
+
     seed_default_users_if_needed()
     try:
         return json.loads(USERS_FILE.read_text(encoding="utf-8"))
@@ -149,6 +174,31 @@ def load_users() -> dict:
 
 def save_users(users: dict):
     USERS_FILE.write_text(json.dumps(users, indent=4), encoding="utf-8")
+    
+    if is_postgres_available():
+        session = get_db_session()
+        if session:
+            try:
+                for uname, u_data in users.items():
+                    existing = session.query(UserModel).filter_by(username=u_data["username"]).first()
+                    if existing:
+                        existing.role = u_data.get("role", existing.role)
+                        existing.name = u_data.get("name", existing.name)
+                        existing.email = u_data.get("email", existing.email)
+                    else:
+                        session.add(UserModel(
+                            username=u_data["username"],
+                            password_hash=u_data["password_hash"],
+                            role=u_data.get("role", "customer"),
+                            name=u_data.get("name", ""),
+                            email=u_data.get("email", ""),
+                            customer_id=u_data.get("customer_id")
+                        ))
+                session.commit()
+            except Exception:
+                session.rollback()
+            finally:
+                session.close()
 
 
 def authenticate_user(username_or_email: str, password: str) -> dict | None:
@@ -157,8 +207,8 @@ def authenticate_user(username_or_email: str, password: str) -> dict | None:
     hashed = _hash_password(password)
 
     for user_data in users.values():
-        if (user_data.get("username").lower() == identifier or
-                user_data.get("email").lower() == identifier):
+        if (user_data.get("username", "").lower() == identifier or
+                user_data.get("email", "").lower() == identifier):
             if user_data.get("password_hash") == hashed:
                 return user_data
     return None
@@ -193,9 +243,9 @@ def register_customer(username: str, email: str, name: str, password: str, city:
         return False, "Username, name, and password are required.", None
 
     for user in users.values():
-        if user.get("username").lower() == username_clean:
+        if user.get("username", "").lower() == username_clean:
             return False, f"Username '{username}' is already taken.", None
-        if user.get("email").lower() == email_clean:
+        if user.get("email", "").lower() == email_clean:
             return False, f"Email '{email}' is already registered.", None
 
     existing_cust_ids = [u.get("customer_id") for u in users.values() if u.get("customer_id")]
@@ -215,12 +265,13 @@ def register_customer(username: str, email: str, name: str, password: str, city:
     users[username_clean] = new_user
     save_users(users)
 
+    # Sync Customer Record
     try:
         customers = json.loads(CUSTOMERS_FILE.read_text(encoding="utf-8"))
     except Exception:
         customers = {}
 
-    customers[new_cust_id] = {
+    cust_obj = {
         "customer_id": new_cust_id,
         "name": name.strip(),
         "email": email_clean,
@@ -233,6 +284,26 @@ def register_customer(username: str, email: str, name: str, password: str, city:
         "total_orders": 0,
         "notes": "Registered via web application."
     }
+    customers[new_cust_id] = cust_obj
     CUSTOMERS_FILE.write_text(json.dumps(customers, indent=4), encoding="utf-8")
 
+    if is_postgres_available():
+        session = get_db_session()
+        if session:
+            try:
+                session.add(CustomerModel(
+                    customer_id=new_cust_id,
+                    name=cust_obj["name"],
+                    email=cust_obj["email"],
+                    phone=cust_obj["phone"],
+                    city=cust_obj["city"],
+                    notes=cust_obj["notes"]
+                ))
+                session.commit()
+            except Exception:
+                session.rollback()
+            finally:
+                session.close()
+
     return True, "Account created successfully!", new_user
+

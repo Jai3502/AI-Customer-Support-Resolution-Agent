@@ -1,11 +1,15 @@
+import json
 import uuid
 from typing import List, Dict, Any, Optional
+from database.pg_client import is_postgres_available, get_db_session
+from database.schema import LongTermMemoryModel
+from database.vector_db import search_memory_vectors, generate_embedding
 
 
 class MemoryManager:
     """
-    Manages long-term memory operations over LangGraph's SqliteStore.
-    Provides structured memory storage, query-based search, profile fallback,
+    Manages long-term memory operations over LangGraph's SqliteStore and PostgreSQL Vector DB.
+    Provides structured memory storage, query-based search, vector search,
     deduplication, and prompt formatting.
     """
 
@@ -17,11 +21,23 @@ class MemoryManager:
 
     def search_memories(self, user_id: str, query: str = "", limit: int = 5) -> List[str]:
         """
-        Searches long-term memories for a user.
-        If no query-specific match is found or query is short/generic,
-        returns all available durable memories for the user up to limit.
+        Searches long-term memories for a user using Vector DB when PostgreSQL is active,
+        falling back to SqliteStore.
         """
-        if not self.store or not user_id:
+        if not user_id:
+            return []
+
+        # 1. Try PostgreSQL Vector Memory Search
+        if is_postgres_available():
+            try:
+                vector_mems = search_memory_vectors(user_id=user_id, query=query, top_k=limit)
+                if vector_mems:
+                    return [m["text"] for m in vector_mems]
+            except Exception:
+                pass
+
+        # 2. Fallback to SqliteStore
+        if not self.store:
             return []
 
         namespace = self._get_namespace(user_id)
@@ -60,9 +76,9 @@ class MemoryManager:
 
     def save_memory(self, user_id: str, memory_text: str, category: str = "general") -> bool:
         """
-        Saves a single memory string for a user, avoiding duplicate entries.
+        Saves a single memory string for a user across SqliteStore and PostgreSQL Vector DB.
         """
-        if not self.store or not user_id or not memory_text:
+        if not user_id or not memory_text:
             return False
 
         memory_text = memory_text.strip()
@@ -75,20 +91,45 @@ class MemoryManager:
             if text.lower() == memory_text.lower():
                 return False
 
-        namespace = self._get_namespace(user_id)
         memory_id = str(uuid.uuid4())
-        try:
-            self.store.put(
-                namespace,
-                memory_id,
-                {
-                    "text": memory_text,
-                    "category": category,
-                },
-            )
-            return True
-        except Exception:
-            return False
+        saved_sqlite = False
+
+        if self.store:
+            namespace = self._get_namespace(user_id)
+            try:
+                self.store.put(
+                    namespace,
+                    memory_id,
+                    {
+                        "text": memory_text,
+                        "category": category,
+                    },
+                )
+                saved_sqlite = True
+            except Exception:
+                saved_sqlite = False
+
+        # Sync to PostgreSQL Vector DB if available
+        if is_postgres_available():
+            session = get_db_session()
+            if session:
+                try:
+                    emb = generate_embedding(memory_text)
+                    session.add(LongTermMemoryModel(
+                        id=memory_id,
+                        user_id=user_id,
+                        memory_text=memory_text,
+                        category=category,
+                        embedding_json=json.dumps(emb)
+                    ))
+                    session.commit()
+                    return True
+                except Exception:
+                    session.rollback()
+                finally:
+                    session.close()
+
+        return saved_sqlite
 
     def get_all_user_memories(self, user_id: str) -> List[str]:
         """
@@ -105,3 +146,4 @@ class MemoryManager:
             return "No stored memories found for this customer."
         formatted = [f"- {m}" for m in memories]
         return "\n".join(formatted)
+

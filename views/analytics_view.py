@@ -3,12 +3,14 @@ import json
 from tools.analytics import get_analytics_summary
 from tools.ticket import get_all_tickets
 from tools.performance import get_performance_summary, load_performance_logs
+from database.pg_client import check_connection_status
+from database.schema import get_table_counts
 
 
 def render_analytics_dashboard():
     """Render 📊 Customer Support Analytics & Performance APM Dashboard."""
     st.title("📊 Customer Support Analytics & APM Performance")
-    st.caption("Real-time operational KPIs, resolution metrics, customer insights, revenue statistics, and APM latency telemetry.")
+    st.caption("Real-time operational KPIs, resolution metrics, customer insights, revenue statistics, APM latency telemetry, and database infrastructure.")
 
     summary = get_analytics_summary()
     kpis = summary["kpis"]
@@ -27,11 +29,12 @@ def render_analytics_dashboard():
     st.divider()
 
     # --- Analytics Tabs ---
-    atab1, atab2, atab3, atab4 = st.tabs([
+    atab1, atab2, atab3, atab4, atab5 = st.tabs([
         "📈 Support Ticket Insights",
         "👥 Customer Base & Tiers",
         "📦 Order & Revenue Analytics",
         "⚡ Performance APM & Telemetry",
+        "🐘 PostgreSQL & Vector Telemetry",
     ])
 
     # ---------------------------------------------------------------------------
@@ -147,6 +150,27 @@ def render_analytics_dashboard():
                     for n_name, n_lat in trace.get("node_latencies", {}).items():
                         st.caption(f"• `{n_name}`: {n_lat} ms")
 
+    # ---------------------------------------------------------------------------
+    # Tab 5: PostgreSQL & Vector Telemetry
+    # ---------------------------------------------------------------------------
+    with atab5:
+        st.subheader("🐘 PostgreSQL Database & Vector DB Telemetry")
+
+        db_status = check_connection_status()
+
+        dbcol1, dbcol2 = st.columns(2)
+        with dbcol1:
+            st.markdown("#### 🔌 Database Connection Engine")
+            st.info(f"**Active Mode:** {db_status['mode']}\n\n**Connection URL:** `{db_status['connection_url']}`")
+
+        with dbcol2:
+            st.markdown("#### 📦 Relational & Vector Record Volumes")
+            counts = get_table_counts()
+            if counts:
+                st.bar_chart(counts, color="#3b82f6")
+            else:
+                st.info("PostgreSQL Fallback Mode (No active DB connection).")
+
     st.divider()
 
     # --- Data Export Section ---
@@ -175,7 +199,8 @@ def render_analytics_dashboard():
     with dcol2:
         analytics_json = json.dumps({
             "analytics_summary": summary,
-            "performance_summary": get_performance_summary()
+            "performance_summary": get_performance_summary(),
+            "database_status": check_connection_status()
         }, indent=4)
         st.download_button(
             label="📥 Download Full Analytics & APM Summary (JSON)",

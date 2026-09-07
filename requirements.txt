@@ -8,3 +8,8 @@ streamlit
 python-dotenv
 pydantic
 aiosqlite
+psycopg2-binary
+sqlalchemy
+pgvector
+numpy
+scikit-learn
