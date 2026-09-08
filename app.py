@@ -10,11 +10,13 @@ from auth import (
     PERM_VIEW_ADMIN_DESK,
     PERM_VIEW_ANALYTICS,
     PERM_VIEW_PERFORMANCE,
+    PERM_MANAGE_CHANNELS,
 )
 from views.auth_view import render_auth_view
 from views.chat_view import render_chat_view
 from views.admin_view import render_admin_dashboard
 from views.analytics_view import render_analytics_dashboard
+from views.omnichannel_view import render_omnichannel_view
 
 # ---------------------------------------------------------------------------
 # Page Configuration & Modern Design System
@@ -116,7 +118,7 @@ if not st.session_state.authenticated:
 # Sidebar User Profile & Navigation Controls
 # ---------------------------------------------------------------------------
 user = st.session_state.user or {}
-user_role = st.session_state.get("role", "customer").lower()
+user_role = (st.session_state.get("role") or "customer").lower()
 
 role_badge_class = f"role-{user_role}"
 role_label = user_role.capitalize()
@@ -144,6 +146,9 @@ with st.sidebar:
 
     if has_permission(user_role, PERM_VIEW_ADMIN_DESK):
         views.append("👨💼 Admin Dashboard")
+
+    if has_permission(user_role, PERM_MANAGE_CHANNELS):
+        views.append("📡 Email & WhatsApp Hub")
 
     if has_permission(user_role, PERM_VIEW_ANALYTICS) or has_permission(user_role, PERM_VIEW_PERFORMANCE):
         views.append("📊 Support & APM Analytics")
@@ -180,6 +185,9 @@ if st.session_state.active_view == "🎧 AI Support Chat":
 
 elif st.session_state.active_view == "👨💼 Admin Dashboard" and has_permission(user_role, PERM_VIEW_ADMIN_DESK):
     render_admin_dashboard(memory_mgr)
+
+elif st.session_state.active_view == "📡 Email & WhatsApp Hub" and has_permission(user_role, PERM_MANAGE_CHANNELS):
+    render_omnichannel_view(graph, memory_mgr)
 
 elif st.session_state.active_view == "📊 Support & APM Analytics" and (has_permission(user_role, PERM_VIEW_ANALYTICS) or has_permission(user_role, PERM_VIEW_PERFORMANCE)):
     render_analytics_dashboard()

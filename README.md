@@ -5,10 +5,11 @@ An AI-powered customer support assistant built using Python, Streamlit, LangGrap
 
 This project simulates an intelligent customer support agent that can understand customer queries, identify intent, search a knowledge base, retrieve customer and order information, maintain conversation memory, generate personalized responses, and escalate critical issues to human support.
 
-##  Features
-
--  AI-powered customer support chatbot
--  Short-term conversation memory
+- 📧 **Email Integration**: Process customer emails, send automated AI email responses via SMTP, customer matching by email, and interactive email inbox simulator.
+- 💬 **WhatsApp Integration**: Support Twilio WhatsApp API & Meta WhatsApp Cloud API with AI auto-messaging, phone number customer lookup, conversation threads, and interactive sandbox testing.
+- 📡 **Omnichannel Management Hub**: Dedicated Streamlit dashboard tab for monitoring, sending, and managing multi-channel customer communications.
+- 🤖 AI-powered customer support chatbot
+- 🧠 Short-term conversation memory
 -  Long-term customer memory
 -  Automatic intent classification
 -  Knowledge-base search

@@ -20,6 +20,7 @@ PERM_UPDATE_ORDERS = "update_orders"
 PERM_VIEW_ANALYTICS = "view_analytics"
 PERM_VIEW_PERFORMANCE = "view_performance"
 PERM_MANAGE_ROLES = "manage_roles"
+PERM_MANAGE_CHANNELS = "manage_channels"
 
 ROLE_PERMISSIONS = {
     "admin": [
@@ -32,6 +33,7 @@ ROLE_PERMISSIONS = {
         PERM_VIEW_ANALYTICS,
         PERM_VIEW_PERFORMANCE,
         PERM_MANAGE_ROLES,
+        PERM_MANAGE_CHANNELS,
     ],
     "agent": [
         PERM_CHAT_SUPPORT,
@@ -39,6 +41,7 @@ ROLE_PERMISSIONS = {
         PERM_MANAGE_TICKETS,
         PERM_EDIT_CUSTOMERS,
         PERM_UPDATE_ORDERS,
+        PERM_MANAGE_CHANNELS,
     ],
     "auditor": [
         PERM_CHAT_SUPPORT,

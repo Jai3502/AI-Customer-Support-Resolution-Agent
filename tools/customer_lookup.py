@@ -129,4 +129,42 @@ def update_customer_membership(customer_id: str, membership: str) -> dict | None
 
     data[customer_id]["membership"] = membership
     CUSTOMER_FILE.write_text(json.dumps(data, indent=4), encoding="utf-8")
-    return data[customer_id]
+    return data[customer_id]
+
+
+def get_customer_by_email(email: str) -> dict | None:
+    """Find customer profile matching email address."""
+    if not email:
+        return None
+    email_clean = email.strip().lower()
+    all_customers = list_all_customers()
+    for cid, cdata in all_customers.items():
+        if cdata.get("email", "").strip().lower() == email_clean:
+            c_copy = dict(cdata)
+            c_copy["customer_id"] = cid
+            return c_copy
+    return None
+
+
+def get_customer_by_phone(phone: str) -> dict | None:
+    """Find customer profile matching phone number."""
+    if not phone:
+        return None
+    
+    # Strip spaces, hyphens, plus signs for comparison
+    def clean_num(p: str) -> str:
+        return "".join(c for c in p if c.isdigit())
+    
+    target_num = clean_num(phone)
+    if not target_num:
+        return None
+
+    all_customers = list_all_customers()
+    for cid, cdata in all_customers.items():
+        c_phone = cdata.get("phone", "")
+        if clean_num(c_phone) and (clean_num(c_phone) == target_num or target_num in clean_num(c_phone) or clean_num(c_phone) in target_num):
+            c_copy = dict(cdata)
+            c_copy["customer_id"] = cid
+            return c_copy
+    return None
+
