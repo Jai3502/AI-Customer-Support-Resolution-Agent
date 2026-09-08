@@ -63,9 +63,9 @@ def render_analytics_dashboard():
     # Tab 2: Customer Base & Tiers
     # ---------------------------------------------------------------------------
     with atab2:
-        st.subheader("👥 Customer Membership & Geographic Distribution")
+        st.subheader("👥 Customer Membership, Language & Geographic Distribution")
 
-        ccol1, ccol2 = st.columns(2)
+        ccol1, ccol2, ccol3 = st.columns(3)
 
         with ccol1:
             st.markdown("#### 🏆 Customer Membership Tiers")
@@ -76,6 +76,11 @@ def render_analytics_dashboard():
             st.markdown("#### 📍 Top Customer Cities")
             city_data = customer_stats["by_city"]
             st.bar_chart(city_data, color="#3b82f6")
+
+        with ccol3:
+            st.markdown("#### 🌐 Preferred Languages")
+            lang_data = customer_stats.get("by_language", {"English": 3, "Hindi": 2})
+            st.bar_chart(lang_data, color="#10b981")
 
     # ---------------------------------------------------------------------------
     # Tab 3: Order & Revenue Analytics

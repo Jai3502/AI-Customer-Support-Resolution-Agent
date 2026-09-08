@@ -16,6 +16,8 @@ class AgentState(TypedDict, total=False):
     ticket_data: Dict[str, Any]
     requires_human: bool
     response: str
+    language: str
+    detected_language: str
     agent_steps: List[str]
     node_latencies: Dict[str, float]
     prompt_tokens: int

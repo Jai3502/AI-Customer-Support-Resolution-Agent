@@ -36,12 +36,15 @@ def get_analytics_summary() -> dict:
     total_customers = len(customers)
     membership_counts = {}
     city_counts = {}
+    language_counts = {}
 
     for c in customers.values():
         m = c.get("membership", "Standard")
         city = c.get("city", "Unknown")
+        lang = c.get("preferred_language", "English")
         membership_counts[m] = membership_counts.get(m, 0) + 1
         city_counts[city] = city_counts.get(city, 0) + 1
+        language_counts[lang] = language_counts.get(lang, 0) + 1
 
     # --- Order Metrics ---
     total_orders = len(orders)
@@ -82,6 +85,7 @@ def get_analytics_summary() -> dict:
         "customers": {
             "by_membership": membership_counts,
             "by_city": city_counts,
+            "by_language": language_counts,
         },
         "orders": {
             "by_status": orders_by_status,

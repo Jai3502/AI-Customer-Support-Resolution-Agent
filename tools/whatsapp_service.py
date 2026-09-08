@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 from tools.customer_lookup import get_customer_by_phone
+from tools.i18n import detect_language
 
 WHATSAPP_FILE = Path("data/whatsapp_messages.json")
 
@@ -217,11 +218,13 @@ def process_incoming_whatsapp(
     outbound_record = None
 
     if auto_reply and graph_agent:
+        detected_lang = detect_language(message_text)
         config = {"configurable": {"thread_id": thread_key}}
         initial_state = {
             "messages": [{"role": "user", "content": message_text}],
             "user_id": customer_id,
             "user_message": message_text,
+            "language": detected_lang,
         }
 
         try:

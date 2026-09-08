@@ -67,5 +67,51 @@
         "completion_tokens": 260,
         "status": "success",
         "error": null
+    },
+    {
+        "trace_id": "TRC-1004",
+        "timestamp": "2026-09-08T20:22:09.101054",
+        "thread_id": "test_thread_hindi",
+        "user_id": "CUST001",
+        "intent": "ORDER",
+        "total_latency_ms": 5006.82,
+        "node_latencies": {
+            "load_memory": 3.31,
+            "classify_intent": 963.15,
+            "retrieve_knowledge": 989.52,
+            "lookup_customer": 0.38,
+            "lookup_order": 0.76,
+            "check_escalation": 0.01,
+            "generate_response": 1771.33,
+            "extract_memory": 1242.13,
+            "save_memory": 36.23
+        },
+        "prompt_tokens": 836,
+        "completion_tokens": 218,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1005",
+        "timestamp": "2026-09-08T20:22:47.710800",
+        "thread_id": "test_thread_hindi",
+        "user_id": "CUST001",
+        "intent": "ORDER",
+        "total_latency_ms": 4503.05,
+        "node_latencies": {
+            "load_memory": 0.52,
+            "classify_intent": 1074.63,
+            "retrieve_knowledge": 802.9,
+            "lookup_customer": 0.5,
+            "lookup_order": 0.43,
+            "check_escalation": 0.01,
+            "generate_response": 1495.97,
+            "extract_memory": 1102.06,
+            "save_memory": 26.02
+        },
+        "prompt_tokens": 874,
+        "completion_tokens": 236,
+        "status": "success",
+        "error": null
     }
 ]

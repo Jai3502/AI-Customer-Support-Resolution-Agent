@@ -9,6 +9,7 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 from tools.customer_lookup import get_customer_by_email
+from tools.i18n import detect_language
 
 EMAIL_INBOX_FILE = Path("data/email_inbox.json")
 
@@ -165,7 +166,7 @@ def process_incoming_email(
         "body": body,
         "timestamp": now_iso,
         "direction": "inbound",
-        "status": "received",
+        "status": "processed",
         "ai_auto_replied": False,
         "customer_id": customer_id,
     }
@@ -179,11 +180,13 @@ def process_incoming_email(
 
     if auto_reply and graph_agent:
         input_msg = f"[Email Subject: {subject}]\n\n{body}"
+        detected_lang = detect_language(body)
         config = {"configurable": {"thread_id": thread_key}}
         initial_state = {
             "messages": [{"role": "user", "content": input_msg}],
             "user_id": customer_id,
             "user_message": input_msg,
+            "language": detected_lang,
         }
 
         try:

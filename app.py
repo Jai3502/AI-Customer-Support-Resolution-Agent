@@ -17,6 +17,7 @@ from views.chat_view import render_chat_view
 from views.admin_view import render_admin_dashboard
 from views.analytics_view import render_analytics_dashboard
 from views.omnichannel_view import render_omnichannel_view
+from tools.i18n import SUPPORTED_LANGUAGES, t
 
 # ---------------------------------------------------------------------------
 # Page Configuration & Modern Design System
@@ -107,6 +108,9 @@ if "customer_id" not in st.session_state:
 if "active_view" not in st.session_state:
     st.session_state.active_view = "🎧 AI Support Chat"
 
+if "language" not in st.session_state:
+    st.session_state.language = "English"
+
 # ---------------------------------------------------------------------------
 # Authentication Routing Guard
 # ---------------------------------------------------------------------------
@@ -131,13 +135,31 @@ elif user_role == "auditor":
 else:
     role_label = "👤 Customer"
 
+lang_code = st.session_state.get("language", "English")
+
 with st.sidebar:
     st.markdown(f"### 👋 {user.get('name', 'User')} <span class='role-badge {role_badge_class}'>{role_label}</span>", unsafe_allow_html=True)
     st.caption(f"📧 `{user.get('email', '')}`")
 
     st.divider()
 
-    st.markdown("### 🧭 Portal Navigation")
+    # --- Global Language Selector ---
+    lang_keys = list(SUPPORTED_LANGUAGES.keys())
+    current_idx = lang_keys.index(lang_code) if lang_code in lang_keys else 0
+    selected_lang = st.selectbox(
+        t("select_language", lang_code),
+        options=lang_keys,
+        format_func=lambda x: f"{SUPPORTED_LANGUAGES[x]['flag']} {x} ({SUPPORTED_LANGUAGES[x]['native']})",
+        index=current_idx,
+        key="global_lang_select",
+    )
+    if selected_lang != st.session_state.language:
+        st.session_state.language = selected_lang
+        st.rerun()
+
+    st.divider()
+
+    st.markdown(f"### {t('nav_portal', lang_code)}")
 
     # Generate available views according to RBAC permissions
     views = []
@@ -162,6 +184,12 @@ with st.sidebar:
     selected_view = st.radio(
         "Select Module",
         options=views,
+        format_func=lambda v: {
+            "🎧 AI Support Chat": t("view_chat", lang_code),
+            "👨💼 Admin Dashboard": t("view_admin", lang_code),
+            "📡 Email & WhatsApp Hub": t("view_omnichannel", lang_code),
+            "📊 Support & APM Analytics": t("view_analytics", lang_code),
+        }.get(v, v),
         index=views.index(st.session_state.active_view),
         key="nav_radio",
     )
@@ -170,7 +198,7 @@ with st.sidebar:
 
     st.divider()
 
-    if st.button("🚪 Sign Out", use_container_width=True):
+    if st.button(t("sign_out", lang_code), use_container_width=True):
         st.session_state.authenticated = False
         st.session_state.user = None
         st.session_state.role = None

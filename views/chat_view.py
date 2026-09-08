@@ -3,6 +3,7 @@ import streamlit as st
 from memory.manager import MemoryManager
 from tools.customer_lookup import list_all_customers, get_customer
 from tools.ticket import get_customer_tickets, create_ticket
+from tools.i18n import t, SUPPORTED_LANGUAGES
 
 
 def render_chat_view(graph, memory_mgr: MemoryManager):
@@ -10,13 +11,14 @@ def render_chat_view(graph, memory_mgr: MemoryManager):
 
     is_admin = st.session_state.get("role") == "admin"
     user_name = st.session_state.get("user", {}).get("name", "User")
+    lang_code = st.session_state.get("language", "English")
 
-    st.title("🎧 AI Customer Support & Resolution Agent")
-    st.caption("Powered by LangGraph, Gemini 3.5, Short/Long-Term Memory & Ticket Escalation")
+    st.title(t("view_chat", lang_code))
+    st.caption(f"Powered by LangGraph, Gemini 3.5, Short/Long-Term Memory & Multilingual Resolution ({lang_code})")
 
     # --- Active Customer Selector / Card ---
     with st.sidebar:
-        st.header("👤 Customer Profile Context")
+        st.header(t("customer_profile", lang_code))
 
         all_customers = list_all_customers()
 
@@ -48,11 +50,11 @@ def render_chat_view(graph, memory_mgr: MemoryManager):
             st.subheader(f"✨ {active_customer.get('name')}")
             col1, col2 = st.columns(2)
             with col1:
-                st.markdown(f"**Tier:** `{active_customer.get('membership')}`")
-                st.markdown(f"**Lang:** `{active_customer.get('preferred_language')}`")
+                st.markdown(f"**{t('tier', lang_code)}:** `{active_customer.get('membership')}`")
+                st.markdown(f"**{t('lang', lang_code)}:** `{lang_code}`")
             with col2:
-                st.markdown(f"**Orders:** `{active_customer.get('total_orders')}`")
-                st.markdown(f"**City:** `{active_customer.get('city')}`")
+                st.markdown(f"**{t('orders', lang_code)}:** `{active_customer.get('total_orders')}`")
+                st.markdown(f"**{t('city', lang_code)}:** `{active_customer.get('city')}`")
 
             if active_customer.get("notes"):
                 st.caption(f"ℹ️ {active_customer.get('notes')}")
@@ -60,29 +62,29 @@ def render_chat_view(graph, memory_mgr: MemoryManager):
         st.divider()
 
         # --- User's Active Tickets ---
-        st.header("🎫 My Support Tickets")
+        st.header(t("my_tickets", lang_code))
         my_tickets = get_customer_tickets(st.session_state.customer_id)
         if my_tickets:
-            for t in my_tickets:
-                st.caption(f"• `{t.get('ticket_id')}` [{t.get('status')}] - {t.get('category')}")
+            for t_item in my_tickets:
+                st.caption(f"• `{t_item.get('ticket_id')}` [{t_item.get('status')}] - {t_item.get('category')}")
         else:
-            st.caption("No open tickets.")
+            st.caption(t("no_tickets", lang_code))
 
         st.divider()
 
         # --- Long-Term Memory Section ---
-        st.header("🧠 Agent Long-Term Memory")
+        st.header(t("agent_memory", lang_code))
         mems = memory_mgr.get_all_user_memories(st.session_state.customer_id)
         if mems:
             for m in mems:
                 st.markdown(f"• {m}")
         else:
-            st.caption("No long-term memories saved yet.")
+            st.caption(t("no_memories", lang_code))
 
         st.divider()
         st.caption(f"Session Thread: `{st.session_state.thread_id[:8]}...`")
 
-        if st.button("🆕 New Conversation", use_container_width=True):
+        if st.button(t("new_conversation", lang_code), use_container_width=True):
             st.session_state.thread_id = str(uuid.uuid4())
             st.session_state.messages = []
             st.rerun()
@@ -92,7 +94,7 @@ def render_chat_view(graph, memory_mgr: MemoryManager):
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    user_input = st.chat_input("Ask a question about your order, returns, or support...")
+    user_input = st.chat_input(t("chat_placeholder", lang_code))
 
     if user_input:
         st.session_state.messages.append({"role": "user", "content": user_input})
@@ -100,7 +102,7 @@ def render_chat_view(graph, memory_mgr: MemoryManager):
             st.markdown(user_input)
 
         with st.chat_message("assistant"):
-            with st.status("Thinking & Resolving...", expanded=False) as status:
+            with st.status(t("thinking", lang_code), expanded=False) as status:
                 try:
                     config = {
                         "configurable": {
@@ -112,14 +114,17 @@ def render_chat_view(graph, memory_mgr: MemoryManager):
                         {
                             "user_id": st.session_state.customer_id,
                             "user_message": user_input,
+                            "language": lang_code,
                         },
                         config=config,
                     )
 
                     response = result.get("response", "I was unable to generate a response.")
                     steps = result.get("agent_steps", [])
+                    detected = result.get("detected_language", lang_code)
+
                     status.update(
-                        label=f"✅ Done ({len(steps)} steps)",
+                        label=f"✅ Done ({len(steps)} steps) • Lang: {detected}",
                         state="complete",
                     )
 
@@ -130,7 +135,7 @@ def render_chat_view(graph, memory_mgr: MemoryManager):
                         ticket = result.get("ticket_data", {})
                         if ticket:
                             st.info(
-                                f"🎫 **Ticket Created**: `{ticket.get('ticket_id', 'N/A')}` "
+                                f"🎫 **{t('ticket_created', lang_code)}**: `{ticket.get('ticket_id', 'N/A')}` "
                                 f"[{ticket.get('priority', 'Medium')}] - Escalated to human support team."
                             )
 

@@ -22,6 +22,7 @@ from tools.advanced_tools import (
 )
 from tools.performance import log_trace
 from memory.manager import MemoryManager
+from tools.i18n import detect_language, translate_query_for_search, translate_text
 
 load_dotenv()
 
@@ -100,6 +101,9 @@ Return the intent, confidence and a short reason.
         intent = "OTHER"
         confidence = 0.5
 
+    detected_lang = detect_language(user_message)
+    target_lang = state.get("language") or detected_lang
+
     elapsed_ms = (time.time() - t0) * 1000
 
     # Initialize node_latencies dict in state
@@ -109,8 +113,10 @@ Return the intent, confidence and a short reason.
     return {
         "intent": intent,
         "confidence": confidence,
+        "language": target_lang,
+        "detected_language": detected_lang,
         "node_latencies": latencies,
-        "agent_steps": ["Intent classified"],
+        "agent_steps": [f"Intent classified & language detected ({target_lang})"],
     }
 
 
@@ -143,28 +149,36 @@ def retrieve_knowledge(state):
     t0 = time.time()
     intent = state.get("intent", "OTHER")
     user_message = state.get("user_message", "")
+    detected_lang = state.get("detected_language") or detect_language(user_message)
+
+    # Translate query to English for vector DB search precision if non-English
+    search_query = translate_query_for_search(user_message, detected_lang)
 
     context = ""
     advanced_tool_data = {}
 
     if intent in {"FAQ", "REFUND", "PAYMENT", "CANCELLATION", "COMPLAINT", "OTHER"}:
-        context = search_knowledge_base(user_message)
-        live_policy = live_policy_search(user_message)
+        context = search_knowledge_base(search_query)
+        live_policy = live_policy_search(search_query)
         advanced_tool_data["live_policy"] = live_policy
 
     if intent in {"COMPLAINT", "OTHER"} or any(w in user_message.lower() for w in ["not working", "broken", "issue", "faulty", "battery"]):
-        diag = diagnose_product_issue(category="Hardware", issue_description=user_message)
+        diag = diagnose_product_issue(category="Hardware", issue_description=search_query)
         advanced_tool_data["diagnostic"] = diag
 
     elapsed_ms = (time.time() - t0) * 1000
     latencies = state.get("node_latencies", {})
     latencies["retrieve_knowledge"] = elapsed_ms
 
+    step_msg = "Knowledge base & Advanced AI tools evaluated"
+    if detected_lang != "English":
+        step_msg += f" (Query translated from {detected_lang} for search)"
+
     return {
         "knowledge_context": context,
         "advanced_tool_data": advanced_tool_data,
         "node_latencies": latencies,
-        "agent_steps": ["Knowledge base & Advanced AI tools evaluated"],
+        "agent_steps": [step_msg],
     }
 
 
@@ -327,8 +341,13 @@ def generate_response(state):
 
     formatted_memories = MemoryManager.format_memories_for_prompt(memory_text)
 
+    target_lang = state.get("language") or state.get("detected_language") or "English"
+
     prompt = f"""
 {SYSTEM_PROMPT}
+
+TARGET RESPONSE LANGUAGE:
+{target_lang}
 
 CURRENT CUSTOMER REQUEST:
 {user_message}
@@ -354,12 +373,12 @@ ORDER DATA:
 HUMAN ESCALATION REQUIRED:
 {human_required}
 
-Generate the best customer-facing response.
-If advanced tool outputs (like refund calculations or store voucher codes) are available:
-- Include exact refund numbers, restocking fee disclosures, or troubleshooting steps clearly.
-If human escalation is required:
-- Clearly explain that the issue is being escalated for human agent review.
-Keep response warm, natural, precise, and professional.
+INSTRUCTIONS:
+1. Output your entire customer-facing response natively in {target_lang}.
+2. Ensure order numbers (e.g. ORD1001), ticket IDs, monetary values, and exact policy rules are preserved accurately.
+3. If advanced tool outputs (like refund calculations or troubleshooting steps) are available, detail them clearly in {target_lang}.
+4. If human escalation is required, explain clearly in {target_lang} that a human support ticket has been opened.
+5. Maintain an empathetic, warm, natural, and professional tone.
 """
 
     response = llm.invoke(prompt)
