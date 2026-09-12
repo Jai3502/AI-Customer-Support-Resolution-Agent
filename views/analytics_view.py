@@ -108,7 +108,18 @@ def render_analytics_dashboard():
         st.subheader("⚡ Agent Performance APM & Latency Telemetry")
         st.caption("Live latency profiling, node bottleneck tracking, token consumption, and APM execution logs.")
 
+        from tools.performance import get_performance_summary, get_system_telemetry
         perf_summary = get_performance_summary()
+        sys_telemetry = get_system_telemetry()
+
+        st.markdown("#### 💻 Hardware & Process Resource Telemetry")
+        mcol1, mcol2, mcol3, mcol4 = st.columns(4)
+        mcol1.metric("🖥️ CPU Usage", f"{sys_telemetry['cpu_percent']}%")
+        mcol2.metric("🧠 Memory RAM Usage", f"{sys_telemetry['memory_percent']}%")
+        mcol3.metric("💾 RAM Used", f"{sys_telemetry['memory_used_mb']:,} MB / {sys_telemetry['memory_total_mb']:,} MB")
+        mcol4.metric("🟢 Process Status", sys_telemetry['status'])
+
+        st.divider()
 
         p1, p2, p3, p4, p5 = st.columns(5)
         p1.metric("⚡ Avg Latency", f"{perf_summary['avg_latency_ms']} ms")

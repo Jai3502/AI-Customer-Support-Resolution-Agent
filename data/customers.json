@@ -63,5 +63,57 @@
         "pincode": "302001",
         "total_orders": 1,
         "notes": "First-time buyer."
+    },
+    "CUST006": {
+        "customer_id": "CUST006",
+        "name": "Pytest User",
+        "email": "pytest99@example.com",
+        "phone": "+91-9900000006",
+        "preferred_language": "English",
+        "membership": "Standard",
+        "city": "Mumbai",
+        "state": "India",
+        "pincode": "560001",
+        "total_orders": 0,
+        "notes": "Registered via web application."
+    },
+    "CUST007": {
+        "customer_id": "CUST007",
+        "name": "Pytest User",
+        "email": "pytest_e5b7a34b@example.com",
+        "phone": "+91-9900000007",
+        "preferred_language": "English",
+        "membership": "Standard",
+        "city": "Mumbai",
+        "state": "India",
+        "pincode": "560001",
+        "total_orders": 0,
+        "notes": "Registered via web application."
+    },
+    "CUST008": {
+        "customer_id": "CUST008",
+        "name": "Pytest User",
+        "email": "pytest_513b95d0@example.com",
+        "phone": "+91-9900000008",
+        "preferred_language": "English",
+        "membership": "Standard",
+        "city": "Mumbai",
+        "state": "India",
+        "pincode": "560001",
+        "total_orders": 0,
+        "notes": "Registered via web application."
+    },
+    "CUST009": {
+        "customer_id": "CUST009",
+        "name": "Pytest User",
+        "email": "pytest_0151cfd4@example.com",
+        "phone": "+91-9900000009",
+        "preferred_language": "English",
+        "membership": "Standard",
+        "city": "Mumbai",
+        "state": "India",
+        "pincode": "560001",
+        "total_orders": 0,
+        "notes": "Registered via web application."
     }
 }

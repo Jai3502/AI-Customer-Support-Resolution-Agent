@@ -13,3 +13,6 @@ sqlalchemy
 pgvector
 numpy
 scikit-learn
+psutil
+pytest
+pytest-cov

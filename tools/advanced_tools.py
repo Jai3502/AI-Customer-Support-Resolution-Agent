@@ -143,3 +143,108 @@ def diagnose_product_issue(category: str, issue_description: str) -> dict:
         "recommended_troubleshooting": steps,
         "eligible_for_warranty_claim": True
     }
+
+
+def check_inventory_and_restock(product_name_or_sku: str, warehouse_location: str = "Central Bangalore Hub") -> dict:
+    """Checks inventory levels, warehouse stock distribution, and estimated restock lead times."""
+    sku_clean = product_name_or_sku.strip().lower()
+
+    inventory_db = {
+        "wireless noise-canceling headphones": {
+            "sku": "PROD-101",
+            "name": "Wireless Noise-Canceling Headphones",
+            "stock_count": 42,
+            "status": "In Stock",
+            "warehouse": warehouse_location,
+            "restock_eta": "Available Immediately",
+            "reorder_threshold": 10
+        },
+        "prod-101": {
+            "sku": "PROD-101",
+            "name": "Wireless Noise-Canceling Headphones",
+            "stock_count": 42,
+            "status": "In Stock",
+            "warehouse": warehouse_location,
+            "restock_eta": "Available Immediately",
+            "reorder_threshold": 10
+        },
+        "ergonomic gaming chair": {
+            "sku": "PROD-102",
+            "name": "Ergonomic Gaming Chair",
+            "stock_count": 8,
+            "status": "Low Stock",
+            "warehouse": warehouse_location,
+            "restock_eta": "Next Shipment in 3 Days (2026-09-14)",
+            "reorder_threshold": 15
+        },
+        "ultra-hd 4k monitor 27 inch": {
+            "sku": "PROD-103",
+            "name": "Ultra-HD 4K Monitor 27 inch",
+            "stock_count": 0,
+            "status": "Out of Stock",
+            "warehouse": "Mumbai Regional Hub",
+            "restock_eta": "Backorder In Transit - Arriving 2026-09-16",
+            "reorder_threshold": 5
+        },
+        "mechanical keyboard RGB": {
+            "sku": "PROD-104",
+            "name": "Mechanical Keyboard RGB",
+            "stock_count": 85,
+            "status": "In Stock",
+            "warehouse": warehouse_location,
+            "restock_eta": "Available Immediately",
+            "reorder_threshold": 20
+        },
+        "smart fitness watch series 5": {
+            "sku": "PROD-105",
+            "name": "Smart Fitness Watch Series 5",
+            "stock_count": 19,
+            "status": "In Stock",
+            "warehouse": warehouse_location,
+            "restock_eta": "Available Immediately",
+            "reorder_threshold": 10
+        }
+    }
+
+    match = None
+    for key, data in inventory_db.items():
+        if key in sku_clean or sku_clean in key:
+            match = data
+            break
+
+    if not match:
+        match = {
+            "sku": f"SKU-{str(uuid.uuid4())[:6].upper()}",
+            "name": product_name_or_sku.title(),
+            "stock_count": 25,
+            "status": "In Stock",
+            "warehouse": warehouse_location,
+            "restock_eta": "Available Immediately",
+            "reorder_threshold": 10
+        }
+
+    return {
+        "query": product_name_or_sku,
+        "item": match,
+        "fulfillment_center": match["warehouse"],
+        "recommended_action": "Proceed with order" if match["stock_count"] > 0 else "Reserve backorder allocation"
+    }
+
+
+def generate_shipping_label(order_id: str, return_reason: str = "Defective Item", customer_address: str = "Default Customer Address") -> dict:
+    """Generates automated return shipping labels, barcode tracking numbers, and courier pickup requests."""
+    tracking_number = f"RET-BD-{str(uuid.uuid4())[:10].upper()}"
+    carrier = "BlueDart Express Return Service"
+
+    return {
+        "order_id": order_id,
+        "return_tracking_number": tracking_number,
+        "carrier": carrier,
+        "pickup_scheduled_date": (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d"),
+        "customer_address": customer_address,
+        "return_reason": return_reason,
+        "label_status": "GENERATED & READY FOR PRINTING",
+        "qr_code_token": f"QR-SHIPPING-{tracking_number}",
+        "instructions": "Print this return label or show QR code to BlueDart pickup executive tomorrow."
+    }
+

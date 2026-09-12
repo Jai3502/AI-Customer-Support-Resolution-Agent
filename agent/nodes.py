@@ -3,7 +3,11 @@ import re
 import json
 import time
 import uuid
+import warnings
 from typing import Literal
+
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 from dotenv import load_dotenv
 from pydantic import BaseModel, Field
@@ -19,6 +23,8 @@ from tools.advanced_tools import (
     calculate_refund_and_fees,
     live_policy_search,
     diagnose_product_issue,
+    check_inventory_and_restock,
+    generate_shipping_label,
 )
 from tools.performance import log_trace
 from memory.manager import MemoryManager
@@ -30,8 +36,6 @@ MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
 llm = ChatGoogleGenerativeAI(
     model=MODEL_NAME,
-    temperature=0.2,
-    thinking_level="minimal",
 )
 
 
@@ -166,6 +170,10 @@ def retrieve_knowledge(state):
         diag = diagnose_product_issue(category="Hardware", issue_description=search_query)
         advanced_tool_data["diagnostic"] = diag
 
+    if any(w in user_message.lower() for w in ["stock", "available", "inventory", "buy", "headphones", "chair", "monitor", "keyboard", "watch"]):
+        inventory = check_inventory_and_restock(search_query)
+        advanced_tool_data["inventory_check"] = inventory
+
     elapsed_ms = (time.time() - t0) * 1000
     latencies = state.get("node_latencies", {})
     latencies["retrieve_knowledge"] = elapsed_ms
@@ -257,6 +265,10 @@ def lookup_order(state):
     advanced_data = state.get("advanced_tool_data", {})
     if refund_calc:
         advanced_data["refund_calculation"] = refund_calc
+        if refund_calc.get("eligible"):
+            target_id = refund_calc.get("order_id", "ORD1001")
+            shipping_label = generate_shipping_label(order_id=target_id, return_reason=user_message)
+            advanced_data["return_shipping_label"] = shipping_label
 
     return {
         "order_data": order_result,

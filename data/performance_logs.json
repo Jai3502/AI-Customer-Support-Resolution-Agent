@@ -113,5 +113,223 @@
         "completion_tokens": 236,
         "status": "success",
         "error": null
+    },
+    {
+        "trace_id": "TRC-1006",
+        "timestamp": "2026-09-11T20:56:17.225269",
+        "thread_id": "test_thread_hindi",
+        "user_id": "CUST001",
+        "intent": "ORDER",
+        "total_latency_ms": 64735.45,
+        "node_latencies": {
+            "load_memory": 4.67,
+            "classify_intent": 22033.07,
+            "retrieve_knowledge": 20008.05,
+            "lookup_customer": 1.65,
+            "lookup_order": 2.69,
+            "check_escalation": 0.01,
+            "generate_response": 21509.17,
+            "extract_memory": 1139.09,
+            "save_memory": 37.06
+        },
+        "prompt_tokens": 886,
+        "completion_tokens": 250,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1007",
+        "timestamp": "2026-09-11T20:56:17.287341",
+        "thread_id": "test-thread-999",
+        "user_id": "CUST001",
+        "intent": "FAQ",
+        "total_latency_ms": 1150.5,
+        "node_latencies": {
+            "classify_intent": 200.0,
+            "generate_response": 950.5
+        },
+        "prompt_tokens": 400,
+        "completion_tokens": 150,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1008",
+        "timestamp": "2026-09-11T21:00:06.042882",
+        "thread_id": "test-thread-999",
+        "user_id": "CUST001",
+        "intent": "FAQ",
+        "total_latency_ms": 1150.5,
+        "node_latencies": {
+            "classify_intent": 200.0,
+            "generate_response": 950.5
+        },
+        "prompt_tokens": 400,
+        "completion_tokens": 150,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1009",
+        "timestamp": "2026-09-11T21:00:27.887574",
+        "thread_id": "test-thread-999",
+        "user_id": "CUST001",
+        "intent": "FAQ",
+        "total_latency_ms": 1150.5,
+        "node_latencies": {
+            "classify_intent": 200.0,
+            "generate_response": 950.5
+        },
+        "prompt_tokens": 400,
+        "completion_tokens": 150,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1010",
+        "timestamp": "2026-09-11T21:05:56.005060",
+        "thread_id": "test-thread-999",
+        "user_id": "CUST001",
+        "intent": "FAQ",
+        "total_latency_ms": 1150.5,
+        "node_latencies": {
+            "classify_intent": 200.0,
+            "generate_response": 950.5
+        },
+        "prompt_tokens": 400,
+        "completion_tokens": 150,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1011",
+        "timestamp": "2026-09-11T21:12:30.426439",
+        "thread_id": "9ecc48b6-8a76-4ea4-8129-f93eaa516627",
+        "user_id": "CUST001",
+        "intent": "OTHER",
+        "total_latency_ms": 90631.59,
+        "node_latencies": {
+            "load_memory": 0.9,
+            "classify_intent": 61568.71,
+            "retrieve_knowledge": 2102.26,
+            "lookup_customer": 2.2,
+            "lookup_order": 1.09,
+            "check_escalation": 0.02,
+            "generate_response": 1788.55,
+            "extract_memory": 25110.52,
+            "save_memory": 57.35
+        },
+        "prompt_tokens": 1750,
+        "completion_tokens": 246,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1012",
+        "timestamp": "2026-09-11T21:13:21.014980",
+        "thread_id": "9ecc48b6-8a76-4ea4-8129-f93eaa516627",
+        "user_id": "CUST001",
+        "intent": "OTHER",
+        "total_latency_ms": 59716.12,
+        "node_latencies": {
+            "load_memory": 1.31,
+            "classify_intent": 37839.65,
+            "retrieve_knowledge": 2465.08,
+            "lookup_customer": 1.01,
+            "lookup_order": 2.14,
+            "check_escalation": 0.03,
+            "generate_response": 18112.83,
+            "extract_memory": 1236.57,
+            "save_memory": 57.51
+        },
+        "prompt_tokens": 1750,
+        "completion_tokens": 258,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1013",
+        "timestamp": "2026-09-11T21:14:01.786724",
+        "thread_id": "9ecc48b6-8a76-4ea4-8129-f93eaa516627",
+        "user_id": "CUST001",
+        "intent": "FAQ",
+        "total_latency_ms": 75900.39,
+        "node_latencies": {
+            "load_memory": 1.12,
+            "classify_intent": 32947.38,
+            "retrieve_knowledge": 2599.13,
+            "lookup_customer": 1.6,
+            "lookup_order": 2.47,
+            "check_escalation": 0.02,
+            "generate_response": 17924.92,
+            "extract_memory": 22352.52,
+            "save_memory": 71.24
+        },
+        "prompt_tokens": 1304,
+        "completion_tokens": 190,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1014",
+        "timestamp": "2026-09-11T21:19:59.050280",
+        "thread_id": "4ff774f3-de9f-435a-b222-e9719e1c4407",
+        "user_id": "CUST001",
+        "intent": "OTHER",
+        "total_latency_ms": 47746.29,
+        "node_latencies": {
+            "load_memory": 0.88,
+            "classify_intent": 19086.05,
+            "retrieve_knowledge": 10725.18,
+            "lookup_customer": 1.69,
+            "lookup_order": 2.27,
+            "check_escalation": 0.02,
+            "generate_response": 16273.73,
+            "extract_memory": 1322.16,
+            "save_memory": 334.3
+        },
+        "prompt_tokens": 1756,
+        "completion_tokens": 206,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1015",
+        "timestamp": "2026-09-11T21:22:21.979896",
+        "thread_id": "test-thread-999",
+        "user_id": "CUST001",
+        "intent": "FAQ",
+        "total_latency_ms": 1150.5,
+        "node_latencies": {
+            "classify_intent": 200.0,
+            "generate_response": 950.5
+        },
+        "prompt_tokens": 400,
+        "completion_tokens": 150,
+        "status": "success",
+        "error": null
+    },
+    {
+        "trace_id": "TRC-1016",
+        "timestamp": "2026-09-11T21:26:42.397601",
+        "thread_id": "52edd1ac-97f3-4229-a75b-a7fe66a15b29",
+        "user_id": "CUST001",
+        "intent": "OTHER",
+        "total_latency_ms": 31572.85,
+        "node_latencies": {
+            "load_memory": 0.56,
+            "classify_intent": 21017.71,
+            "retrieve_knowledge": 1525.32,
+            "lookup_customer": 1.05,
+            "lookup_order": 2.62,
+            "check_escalation": 0.01,
+            "generate_response": 5701.63,
+            "extract_memory": 3279.91,
+            "save_memory": 44.04
+        },
+        "prompt_tokens": 1474,
+        "completion_tokens": 214,
+        "status": "success",
+        "error": null
     }
 ]

@@ -52,5 +52,41 @@
         "email": "vikram.singh@example.com",
         "customer_id": "CUST005",
         "created_at": "2026-09-06T18:10:24.803302"
+    },
+    "pytest_user_99": {
+        "username": "pytest_user_99",
+        "password_hash": "8b1373b6172d5431f20ca5b988ec4012b740114b847e999c3badd0048c9935f1",
+        "role": "agent",
+        "name": "Pytest User",
+        "email": "pytest99@example.com",
+        "customer_id": "CUST006",
+        "created_at": "2026-09-11T20:56:17.280726"
+    },
+    "pytest_user_e5b7a34b": {
+        "username": "pytest_user_e5b7a34b",
+        "password_hash": "8b1373b6172d5431f20ca5b988ec4012b740114b847e999c3badd0048c9935f1",
+        "role": "agent",
+        "name": "Pytest User",
+        "email": "pytest_e5b7a34b@example.com",
+        "customer_id": "CUST007",
+        "created_at": "2026-09-11T21:00:27.884161"
+    },
+    "pytest_user_513b95d0": {
+        "username": "pytest_user_513b95d0",
+        "password_hash": "8b1373b6172d5431f20ca5b988ec4012b740114b847e999c3badd0048c9935f1",
+        "role": "agent",
+        "name": "Pytest User",
+        "email": "pytest_513b95d0@example.com",
+        "customer_id": "CUST008",
+        "created_at": "2026-09-11T21:05:56.000625"
+    },
+    "pytest_user_0151cfd4": {
+        "username": "pytest_user_0151cfd4",
+        "password_hash": "8b1373b6172d5431f20ca5b988ec4012b740114b847e999c3badd0048c9935f1",
+        "role": "agent",
+        "name": "Pytest User",
+        "email": "pytest_0151cfd4@example.com",
+        "customer_id": "CUST009",
+        "created_at": "2026-09-11T21:22:21.971625"
     }
 }

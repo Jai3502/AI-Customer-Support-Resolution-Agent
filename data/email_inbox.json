@@ -1,0 +1,30 @@
+[
+    {
+        "id": "EML-1001",
+        "thread_id": "thr_rahul_s",
+        "sender_email": "rahul.sharma@example.com",
+        "sender_name": "Rahul Sharma",
+        "recipient_email": "support@supportagent.com",
+        "subject": "Inquiry regarding order ORD1001 shipping status",
+        "body": "Hello Support Team,\n\nI ordered Wireless Noise-Canceling Headphones (ORD1001) last week. Can you please check when it will be delivered?\n\nThank you,\nRahul",
+        "timestamp": "2026-09-11T21:11:18.640951",
+        "direction": "inbound",
+        "status": "processed",
+        "ai_auto_replied": true,
+        "customer_id": "CUST001"
+    },
+    {
+        "id": "EML-1002",
+        "thread_id": "thr_rahul_s",
+        "sender_email": "support@supportagent.com",
+        "sender_name": "AI Support Agent",
+        "recipient_email": "rahul.sharma@example.com",
+        "subject": "Re: Inquiry regarding order ORD1001 shipping status",
+        "body": "Hello Rahul,\n\nThank you for reaching out! Your order ORD1001 for Wireless Noise-Canceling Headphones is currently Shipped via FedEx (Tracking ID: FDX987654321). Estimated delivery date is 2026-03-08.\n\nPlease let us know if you need any further assistance!\n\nBest regards,\nAI Customer Support Team",
+        "timestamp": "2026-09-11T21:11:18.640966",
+        "direction": "outbound",
+        "status": "sent",
+        "ai_auto_replied": true,
+        "customer_id": "CUST001"
+    }
+]

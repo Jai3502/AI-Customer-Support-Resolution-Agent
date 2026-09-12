@@ -1,8 +1,12 @@
 import os
 import re
+import warnings
 from typing import Dict, Any, Optional
 from dotenv import load_dotenv
 from langchain_google_genai import ChatGoogleGenerativeAI
+
+warnings.filterwarnings("ignore", category=UserWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 load_dotenv()
 
@@ -16,8 +20,6 @@ def get_llm():
     if _llm is None:
         _llm = ChatGoogleGenerativeAI(
             model=MODEL_NAME,
-            temperature=0.1,
-            thinking_level="minimal",
         )
     return _llm
 

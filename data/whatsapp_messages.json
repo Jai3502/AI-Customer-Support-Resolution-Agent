@@ -1,0 +1,28 @@
+[
+    {
+        "id": "WA-1001",
+        "thread_id": "wa_thr_919876543210",
+        "sender_phone": "+91-9876543210",
+        "sender_name": "Rahul Sharma",
+        "recipient_phone": "whatsapp:+14155238886",
+        "message": "Hi, can I return my Wireless Noise-Canceling Headphones if I opened the box?",
+        "timestamp": "2026-09-11T21:11:18.645040",
+        "direction": "inbound",
+        "status": "processed",
+        "ai_auto_replied": true,
+        "customer_id": "CUST001"
+    },
+    {
+        "id": "WA-1002",
+        "thread_id": "wa_thr_919876543210",
+        "sender_phone": "whatsapp:+14155238886",
+        "sender_name": "AI Support Bot",
+        "recipient_phone": "+91-9876543210",
+        "message": "Hello Rahul! Yes, under our 30-day return policy, items can be returned within 30 days of delivery. As long as all original accessories are included, you are eligible for a full refund or replacement. Would you like me to initiate a return ticket for you?",
+        "timestamp": "2026-09-11T21:11:18.645056",
+        "direction": "outbound",
+        "status": "sent",
+        "ai_auto_replied": true,
+        "customer_id": "CUST001"
+    }
+]
