@@ -490,9 +490,6 @@ streamlit run app.py
 ```
 
 Open your browser at `http://localhost:8501`.
-
-### 🔑 Default RBAC Login Credentials
-
 ---
 
 ## 📜 License
