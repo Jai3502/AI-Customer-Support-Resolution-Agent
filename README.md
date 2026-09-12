@@ -493,11 +493,6 @@ Open your browser at `http://localhost:8501`.
 
 ### 🔑 Default RBAC Login Credentials
 
-- **Super Admin**: Username `admin` | Password `admin123`
-- **Support Agent**: Username `agent1` | Password `agent123`
-- **Compliance Auditor**: Username `auditor1` | Password `auditor123`
-- **Customer Account**: Username `rahul` | Password `customer123`
-
 ---
 
 ## 📜 License
